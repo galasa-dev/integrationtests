@@ -36,7 +36,7 @@ import dev.galasa.core.manager.StoredArtifactRoot;
 import dev.galasa.core.manager.TestProperty;
 import dev.galasa.framework.spi.teststructure.TestStructure;
 import dev.galasa.framework.spi.utils.GalasaGsonBuilder;
-
+//test pr
 /**
  * This integration test will prove that the basic framework is working by
  * running a few easy IVTs.
