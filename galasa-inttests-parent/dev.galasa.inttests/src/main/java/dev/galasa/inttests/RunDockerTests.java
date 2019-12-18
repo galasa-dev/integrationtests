@@ -3,7 +3,7 @@
  * 
  * (c) Copyright IBM Corp. 2019.
  */
-package dev.voras.inttests;
+package dev.galasa.inttests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -97,27 +97,27 @@ public class RunDockerTests {
         logger.info("Deleting any Galasa Docker containers/images/network that could have been left hanging around");
 
         String response = shell.issueCommand(
-                "docker rm -f test-resources voras-api voras-resmon voras-ras voras-cps voras-resources voras-controller voras-couchdb-init");
+                "docker rm -f test-resources galasa-api galasa-resmon galasa-ras galasa-cps galasa-resources galasa-controller galasa-couchdb-init");
         logger.info("delete containers response :-\n" + response);
 
         response = shell.issueCommand("docker rmi quay.io/coreos/etcd:v3.2.25" + " couchdb:2"
-                + " cicsts-docker-local.artifactory.swg-devops.com/voras-ras-couchdb-init-amd64:" + dockerVersion
-                + " cicsts-docker-local.artifactory.swg-devops.com/voras-api-bootstrap-amd64:" + dockerVersion
-                + " cicsts-docker-local.artifactory.swg-devops.com/voras-resources:" + dockerVersion
-                + " cicsts-docker-local.artifactory.swg-devops.com/voras-boot-embedded:" + dockerVersion);
+                + " cicsts-docker-local.artifactory.swg-devops.com/galasa-ras-couchdb-init-amd64:" + dockerVersion
+                + " cicsts-docker-local.artifactory.swg-devops.com/galasa-api-bootstrap-amd64:" + dockerVersion
+                + " cicsts-docker-local.artifactory.swg-devops.com/galasa-resources:" + dockerVersion
+                + " cicsts-docker-local.artifactory.swg-devops.com/galasa-boot-embedded:" + dockerVersion);
         logger.info("delete images response :-\n" + response);
 
-        response = shell.issueCommand("docker network rm voras");
+        response = shell.issueCommand("docker network rm galasa");
         logger.info("delete network response :-\n" + response);
 
-        response = shell.issueCommand("docker volume rm -f voras-etcd voras-couchdb");
+        response = shell.issueCommand("docker volume rm -f galasa-etcd galasa-couchdb");
         logger.info("delete volumes response :-\n" + response);
 
         // *** Clear our test directory
         response = shell.issueCommand("rm -rf galasa-test");
 
         // *** Clear maven
-        response = shell.issueCommand("rm -rf .m2/repository/dev/voras");
+        response = shell.issueCommand("rm -rf .m2/repository/dev/galasa");
     }
 
     /**
@@ -134,19 +134,19 @@ public class RunDockerTests {
         ICredentialsUsernamePassword dockerCreds = (ICredentialsUsernamePassword) coreManager.getCredentials("w3");
         String response = shell
                 .issueCommand("docker login -u " + dockerCreds.getUsername() + " -p " + dockerCreds.getPassword()
-                        + " cicsts-docker-local.artifactory.swg-devops.com/voras-resources;echo cmd-rc=$?");
+                        + " cicsts-docker-local.artifactory.swg-devops.com/galasa-resources;echo cmd-rc=$?");
         assertThat(response).as("Logon Docker").contains("cmd-rc=0"); // check we exited 0
 
         // *** Pull the resources image
         logger.info("Pulling the resources docker image");
-        response = shell.issueCommand("docker pull cicsts-docker-local.artifactory.swg-devops.com/voras-resources:"
+        response = shell.issueCommand("docker pull cicsts-docker-local.artifactory.swg-devops.com/galasa-resources:"
                 + dockerVersion + ";echo cmd-rc=$?");
         assertThat(response).as("Pull resources image").contains("cmd-rc=0"); // check we exited 0
 
         // *** run a special container for the purposes of extracting the runtime.zip
         logger.info("Starting a testing resource container");
         response = shell.issueCommand(
-                "docker run --name test-resources -d -p 8880:80 cicsts-docker-local.artifactory.swg-devops.com/voras-resources:"
+                "docker run --name test-resources -d -p 8880:80 cicsts-docker-local.artifactory.swg-devops.com/galasa-resources:"
                         + dockerVersion + ";echo cmd-rc=$?");
         assertThat(response).as("Start Test Resources image").contains("cmd-rc=0"); // check we exited 0
 
@@ -158,13 +158,13 @@ public class RunDockerTests {
         logger.info("Fetching the runtime.zip");
         response = shell.issueCommand("mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get "
                 + "-DrepoUrl=http://127.0.0.1:8880/maven "
-                + "-Dartifact=dev.voras:runtime:0.3.0-SNAPSHOT:zip;echo cmd-rc=$?");
+                + "-Dartifact=dev.galasa:runtime:0.3.0-SNAPSHOT:zip;echo cmd-rc=$?");
         assertThat(response).as("Fetch runtime.zip").contains("cmd-rc=0"); // check we exited 0
 
         // *** Unzip the runtime.zip
         logger.info("Unzipping runtime.zip");
         response = shell.issueCommand("unzip " + "-d galasa-test "
-                + ".m2/repository/dev/voras/runtime/0.3.0-SNAPSHOT/runtime-0.3.0-SNAPSHOT.zip;echo cmd-rc=$?");
+                + ".m2/repository/dev/galasa/runtime/0.3.0-SNAPSHOT/runtime-0.3.0-SNAPSHOT.zip;echo cmd-rc=$?");
         assertThat(response).as("Unzip runtime.zip").contains("cmd-rc=0"); // check we exited 0
 
         logger.info("We now have the runtime.zip ready for building the Galasa Ecosystem");
@@ -222,7 +222,7 @@ public class RunDockerTests {
         boolean started = false;
         while (Instant.now().compareTo(expire) < 0) {
             logger.info("Checking to see if the Resources Container has started");
-            response = shell.issueCommand("docker logs voras-resources");
+            response = shell.issueCommand("docker logs galasa-resources");
             if (response.contains("resuming normal operations")) {
                 started = true;
                 logger.info("Resources Container started");
@@ -250,7 +250,7 @@ public class RunDockerTests {
         boolean started = false;
         while (Instant.now().compareTo(expire) < 0) {
             logger.info("Checking to see if the CPS has started");
-            response = shell.issueCommand("docker logs voras-cps");
+            response = shell.issueCommand("docker logs galasa-cps");
             if (response.contains("ready to serve client requests")) {
                 started = true;
                 logger.info("CPS Container started");
@@ -310,7 +310,7 @@ public class RunDockerTests {
         boolean started = false;
         while (Instant.now().compareTo(expire) < 0) {
             logger.info("Checking to see if the RAS has started");
-            response = shell.issueCommand("docker logs voras-ras");
+            response = shell.issueCommand("docker logs galasa-ras");
             if (response.contains("couch_replicator_clustering : cluster stable")) {
                 started = true;
                 logger.info("RAS Container started");
@@ -367,7 +367,7 @@ public class RunDockerTests {
         boolean started = false;
         while (Instant.now().compareTo(expire) < 0) {
             logger.info("Checking to see if the ResMon has started");
-            response = shell.issueCommand("docker logs voras-resmon");
+            response = shell.issueCommand("docker logs galasa-resmon");
             if (response.contains("Resource Manager has started")) {
                 started = true;
                 logger.info("ResMon Container started");
@@ -395,7 +395,7 @@ public class RunDockerTests {
         boolean started = false;
         while (Instant.now().compareTo(expire) < 0) {
             logger.info("Checking to see if the Docker Controller has started");
-            response = shell.issueCommand("docker logs voras-controller");
+            response = shell.issueCommand("docker logs galasa-controller");
             if (response.contains("Docker controller has started")) {
                 started = true;
                 logger.info("Docker Controller Container started");
@@ -415,7 +415,7 @@ public class RunDockerTests {
     @Test
     public void runCoreIVT() throws Exception {
 
-        submitTest("dev.voras.ivt.core", "dev.voras.ivt.core.CoreManagerIVT", "CORE1");
+        submitTest("dev.galasa.ivt.core", "dev.galasa.ivt.core.CoreManagerIVT", "CORE1");
 
         HashMap<String, String> rasIds = new HashMap<>();
 
@@ -448,8 +448,8 @@ public class RunDockerTests {
     @Test
     public void runAllIVTs() throws Exception {
 
-        submitTest("dev.voras.ivt.core", "dev.voras.ivt.core.ArtifactManagerIVT", "ART1");
-        submitTest("dev.voras.ivt.network", "dev.voras.ivt.network.HttpManagerIVT", "HTTP1");
+        submitTest("dev.galasa.ivt.core", "dev.galasa.ivt.core.ArtifactManagerIVT", "ART1");
+        submitTest("dev.galasa.ivt.network", "dev.galasa.ivt.network.HttpManagerIVT", "HTTP1");
 
         HashSet<String> runNames = new HashSet<>();
         runNames.add("ART1");
@@ -585,7 +585,7 @@ public class RunDockerTests {
         putRunProperty(runName, "request.type", "inttests");
         putRunProperty(runName, "requestor", "Integrated Tests");
         putRunProperty(runName, "local", "false");
-        putRunProperty(runName, "obr", "mvn:dev.voras/dev.voras.ivt.obr/0.3.0-SNAPSHOT/obr");
+        putRunProperty(runName, "obr", "mvn:dev.galasa/dev.galasa.ivt.obr/0.3.0-SNAPSHOT/obr");
         putRunProperty(runName, "test", bundle + "/" + test);
         putRunProperty(runName, "bundle", bundle);
         putRunProperty(runName, "testclass", test);
@@ -606,16 +606,16 @@ public class RunDockerTests {
     // TODO retrieve all the RAS and docker logs etc
 
 //	/**
-//	 * Retrieve the voras directory including the RAS
+//	 * Retrieve the galasa directory including the RAS
 //	 * @throws Exception 
 //	 */
 //	@AfterClass
 //	public void getLogs() throws Exception {
-//		String response = this.shell.issueCommand("zip -r -9 voras.zip .voras;echo zip-rc=$?");
+//		String response = this.shell.issueCommand("zip -r -9 galasa.zip .galasa;echo zip-rc=$?");
 //		assertThat(response).as("zip rc check is 0").contains("zip-rc=0"); // check we exited 0
 //		
-//		Path zip = this.homePath.resolve("voras.zip");  // the zip file
-//		Path sazip = this.storedArtifactRoot.resolve("voras.zip"); // stored artifact file
+//		Path zip = this.homePath.resolve("galasa.zip");  // the zip file
+//		Path sazip = this.storedArtifactRoot.resolve("galasa.zip"); // stored artifact file
 //		Files.copy(zip, sazip); //copy it
 //			
 //	}

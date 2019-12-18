@@ -3,7 +3,7 @@
  * 
  * (c) Copyright IBM Corp. 2019.
  */
-package dev.voras.inttests;
+package dev.galasa.inttests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +41,7 @@ import dev.galasa.framework.spi.utils.GalasaGsonBuilder;
  * This integration test will prove that the basic framework is working by
  * running a few easy IVTs.
  * 
- * The test will download the runtime.zip and extract the voras-boot.jar file.
+ * The test will download the runtime.zip and extract the galasa-boot.jar file.
  * 
  * It will then run the IVTs from the command line.
  * 
@@ -116,7 +116,7 @@ public class RunCommandlineTests {
 
         // Get the skeleton settings.xml and provide the test repo
         HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("vorasrepo", this.mavenRepository);
+        parameters.put("galasarepo", this.mavenRepository);
         InputStream is = bundleResources.retrieveSkeletonFile("settings.xml", parameters, SkeletonType.VELOCITY);
 
         // *** Copy the file to the test system
@@ -124,15 +124,15 @@ public class RunCommandlineTests {
     }
 
     /**
-     * Retreive the runtime.zip from maven and extract the voras-boot.jar file
+     * Retreive the runtime.zip from maven and extract the galasa-boot.jar file
      * 
      * @throws Exception - standard catchall
      */
     @BeforeClass
-    public void setupVorasBoot() throws Exception {
+    public void setupgalasaBoot() throws Exception {
         // *** Retrieve the runtime zip from the maven repository
         String response = this.shell.issueCommand(
-                "mvn -B org.apache.maven.plugins:maven-dependency-plugin:2.8:get -Dartifact=dev.voras:runtime:0.3.0-SNAPSHOT:zip > mvn.log;echo maven-rc=$?");
+                "mvn -B org.apache.maven.plugins:maven-dependency-plugin:2.8:get -Dartifact=dev.galasa:runtime:0.3.0-SNAPSHOT:zip > mvn.log;echo maven-rc=$?");
         assertThat(response).as("maven rc search").contains("maven-rc=0"); // check we exited 0
         Path log = this.homePath.resolve("mvn.log"); // the log file
         Path saLog = this.storedArtifactRoot.resolve("mvn.log"); // stored artifact file
@@ -140,15 +140,15 @@ public class RunCommandlineTests {
 
         this.logger.info("Runtime successfully download");
 
-        // *** Unzip the runtime to get the voras-boot
+        // *** Unzip the runtime to get the galasa-boot
         response = this.shell.issueCommand(
-                "unzip -o .m2/repository/dev/voras/runtime/0.3.0-SNAPSHOT/runtime-0.3.0-SNAPSHOT.zip > unzip.log;echo zip-rc=$?");
+                "unzip -o .m2/repository/dev/galasa/runtime/0.3.0-SNAPSHOT/runtime-0.3.0-SNAPSHOT.zip > unzip.log;echo zip-rc=$?");
         assertThat(response).as("zip rc search").contains("zip-rc=0"); // check we exited 0
         log = this.homePath.resolve("unzip.log"); // the log file
         saLog = this.storedArtifactRoot.resolve("unzip.log"); // the stored artifact
         Files.copy(log, saLog); // copy it
 
-        this.logger.info("voras-boot unzipped");
+        this.logger.info("galasa-boot unzipped");
     }
 
     /**
@@ -162,16 +162,16 @@ public class RunCommandlineTests {
         // Build the command line we need to run the core ivt
         StringBuilder sb = new StringBuilder();
         sb.append("java "); // Run with the default java installation
-        sb.append("-jar voras-boot.jar "); // The installed boot jar
+        sb.append("-jar galasa-boot.jar "); // The installed boot jar
         sb.append("--remotemaven ");
         sb.append(mavenRepository); // The framework/test maven repository
         sb.append(" ");
-        sb.append("--obr mvn:dev.voras/dev.voras.uber.obr/0.3.0-SNAPSHOT/obr "); // the framework obr
-        sb.append("--obr mvn:dev.voras/dev.voras.ivt.obr/0.3.0-SNAPSHOT/obr "); // The IVT Obr
-        sb.append("--test dev.voras.ivt.core/dev.voras.ivt.core.CoreManagerIVT "); // The Core IVT
+        sb.append("--obr mvn:dev.galasa/dev.galasa.uber.obr/0.3.0-SNAPSHOT/obr "); // the framework obr
+        sb.append("--obr mvn:dev.galasa/dev.galasa.ivt.obr/0.3.0-SNAPSHOT/obr "); // The IVT Obr
+        sb.append("--test dev.galasa.ivt.core/dev.galasa.ivt.core.CoreManagerIVT "); // The Core IVT
         sb.append("--trace "); // Lets get as much bask as we can in case of failure
         sb.append("> coreivt.log "); // Save the log
-        sb.append(";echo voras-boot-rc=$?"); // check that the run ended with exit code 0
+        sb.append(";echo galasa-boot-rc=$?"); // check that the run ended with exit code 0
 
         logger.info("About to issue the command :-\n" + sb.toString());
 
@@ -184,7 +184,7 @@ public class RunCommandlineTests {
         Path runLog = this.storedArtifactRoot.resolve("coreivt.log"); // the stored artifact
         Files.copy(log, runLog); // copy to stored artifacts
 
-        assertThat(response).as("run command").contains("voras-boot-rc=0"); // check we exited 0
+        assertThat(response).as("run command").contains("galasa-boot-rc=0"); // check we exited 0
 
         assertThat(response).as("check there were no warnings issued").doesNotContain("WARNING"); // make sure java
                                                                                                   // didnt issue
@@ -199,7 +199,7 @@ public class RunCommandlineTests {
         logger.info("The CoreIVT test was run name " + runName);
 
         // *** Retrieve the Test Structure
-        Path structureFile = this.homePath.resolve(".voras/ras/" + runName + "/structure.json");
+        Path structureFile = this.homePath.resolve(".galasa/ras/" + runName + "/structure.json");
         assertThat(Files.exists(structureFile)).as("Test structure exists on test server for this run").isTrue(); // Check
                                                                                                                   // that
                                                                                                                   // the
@@ -216,17 +216,17 @@ public class RunCommandlineTests {
     }
 
     /**
-     * Retrieve the voras directory including the RAS
+     * Retrieve the galasa directory including the RAS
      * 
      * @throws Exception
      */
     @AfterClass
     public void getLogs() throws Exception {
-        String response = this.shell.issueCommand("zip -r -9 voras.zip .voras;echo zip-rc=$?");
+        String response = this.shell.issueCommand("zip -r -9 galasa.zip .galasa;echo zip-rc=$?");
         assertThat(response).as("zip rc check is 0").contains("zip-rc=0"); // check we exited 0
 
-        Path zip = this.homePath.resolve("voras.zip"); // the zip file
-        Path sazip = this.storedArtifactRoot.resolve("voras.zip"); // stored artifact file
+        Path zip = this.homePath.resolve("galasa.zip"); // the zip file
+        Path sazip = this.storedArtifactRoot.resolve("galasa.zip"); // stored artifact file
         Files.copy(zip, sazip); // copy it
 
     }

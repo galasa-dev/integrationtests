@@ -4,25 +4,25 @@
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
 	<pluginGroups>
-		<pluginGroup>dev.voras</pluginGroup>
+		<pluginGroup>dev.galasa</pluginGroup>
 	</pluginGroups>
 
 	<profiles>
 		<profile>
-			<id>voras</id>
+			<id>galasa</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<repositories>
 				<repository>
-					<id>voras.repo</id>
-					<url>$vorasrepo</url>
+					<id>galasa.repo</id>
+					<url>$galasarepo</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
-					<id>voras.repo</id>
-					<url>$vorasrepo</url>
+					<id>galasa.repo</id>
+					<url>$galasarepo</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
