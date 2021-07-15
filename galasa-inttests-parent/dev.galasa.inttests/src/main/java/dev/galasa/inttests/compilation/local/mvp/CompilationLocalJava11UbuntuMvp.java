@@ -36,5 +36,10 @@ public class CompilationLocalJava11UbuntuMvp extends AbstractCompilationLocal {
     protected ILinuxImage getLinuxImage() {
         return this.linuxImage;
     }
+    
+    @Override
+    protected IJavaUbuntuInstallation getJavaInstallation() {
+        return this.java;
+    }
 
 }

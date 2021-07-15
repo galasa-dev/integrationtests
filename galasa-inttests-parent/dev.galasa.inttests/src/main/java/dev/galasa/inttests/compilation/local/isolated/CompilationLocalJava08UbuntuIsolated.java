@@ -36,5 +36,10 @@ public class CompilationLocalJava08UbuntuIsolated extends AbstractCompilationLoc
     protected ILinuxImage getLinuxImage() {
         return this.linuxImage;
     }
+    
+    @Override
+    protected IJavaUbuntuInstallation getJavaInstallation() {
+        return this.java;
+    }
 
 }
