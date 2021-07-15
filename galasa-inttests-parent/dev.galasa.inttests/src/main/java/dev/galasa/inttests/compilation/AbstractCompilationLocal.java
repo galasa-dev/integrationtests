@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,10 +67,15 @@ public abstract class AbstractCompilationLocal {
     public IHttpClient 	client;
 	
 	private String 		prefix;
+	private String 		testProjectName;
+	private String 		managerProjectName;
 	
 	@BeforeClass
 	public void setupTest() throws ResourceUnavailableException, IOException {
 		prefix = "dev.galasa.simbank";
+		testProjectName = prefix + ".tests";
+		managerProjectName = prefix + ".manager";
+
 		
 		Path simDir = setupSimPlatform();
 		
@@ -82,8 +88,15 @@ public abstract class AbstractCompilationLocal {
 		Path simplatformDir = unzipArchive(simplatformZip);
 		
 		Path simplatformParent = structureSimplatform(simplatformDir);
+		
+		makeChanges(simplatformParent);
 
 		return simplatformParent; // Eventually return remote dir with correct file(s)
+	}
+	
+	private void makeChanges(Path simplatformParent) throws IOException {
+		renameFiles(simplatformParent);
+		changeAllPrefixes(simplatformParent);
 	}
 		
     private Path downloadHttp(String downloadLocation) throws ResourceUnavailableException {
@@ -141,9 +154,6 @@ public abstract class AbstractCompilationLocal {
 	}
 	
 	private Path structureSimplatform(Path unzippedDir) throws IOException {
-		String testProjectName = prefix + ".tests";
-		String managerProjectName = prefix + ".manager";
-		
 		// Create new (temp) directory
 		Path parentDir = Files.createTempDirectory("galasa.test.simplatform.parent");
 		parentDir.toFile().deleteOnExit();
@@ -184,6 +194,37 @@ public abstract class AbstractCompilationLocal {
                 return FileVisitResult.CONTINUE;
             }
 		});
+	}
+	
+	private void renameFiles(Path simplatformParent) throws IOException {
+		Path managerDir = simplatformParent.resolve(managerProjectName);
+		Path testDir = simplatformParent.resolve(testProjectName);
+		
+		Files.move(managerDir.resolve("settings-example.gradle"), managerDir.resolve("settings.gradle"));		
+		Files.move(managerDir.resolve("build-example.gradle"), managerDir.resolve("build.gradle"));
+		Files.move(managerDir.resolve("bnd-example.bnd"), managerDir.resolve("bnd.bnd"));
+		
+		Files.move(testDir.resolve("settings-example.gradle"), testDir.resolve("settings.gradle"));		
+		Files.move(testDir.resolve("build-example.gradle"), testDir.resolve("build.gradle"));
+		Files.move(testDir.resolve("bnd-example.bnd"), testDir.resolve("bnd.bnd"));
+		
+	}
+	
+	private void changeAllPrefixes(Path simplatformParent) throws IOException {
+		// manager build
+		changePrefix(simplatformParent.resolve(managerProjectName + "/build.gradle"));
+		// manager settings
+		changePrefix(simplatformParent.resolve(managerProjectName + "/settings.gradle"));
+		// test build
+		changePrefix(simplatformParent.resolve(testProjectName + "/build.gradle"));
+		// test settings
+		changePrefix(simplatformParent.resolve(testProjectName + "/settings.gradle"));
+	}
+	
+	private void changePrefix(Path file) throws IOException {
+		String fileData = new String(Files.readAllBytes(file), Charset.defaultCharset());
+    	fileData = fileData.replace("%%prefix%%", prefix);
+    	Files.write(file, fileData.getBytes());
 	}
 	
 	@Test
