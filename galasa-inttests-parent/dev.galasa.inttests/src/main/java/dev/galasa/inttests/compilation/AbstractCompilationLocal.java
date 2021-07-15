@@ -7,18 +7,16 @@ package dev.galasa.inttests.compilation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
@@ -67,18 +65,25 @@ public abstract class AbstractCompilationLocal {
 	@HttpClient
     public IHttpClient 	client;
 	
+	private String 		prefix;
+	
 	@BeforeClass
 	public void setupTest() throws ResourceUnavailableException, IOException {
+		prefix = "dev.galasa.simbank";
+		
 		Path simDir = setupSimPlatform();
 		
 		logger.info("Simplatform Path:" + simDir.toString());
 	}
+
 	
 	private Path setupSimPlatform() throws ResourceUnavailableException, IOException {
 		Path simplatformZip = downloadHttp("https://github.com/galasa-dev/simplatform/archive/main.zip");
 		Path simplatformDir = unzipArchive(simplatformZip);
+		
+		Path simplatformParent = structureSimplatform(simplatformDir);
 
-		return simplatformDir;
+		return simplatformParent; // Eventually return remote dir with correct file(s)
 	}
 		
     private Path downloadHttp(String downloadLocation) throws ResourceUnavailableException {
@@ -126,7 +131,6 @@ public abstract class AbstractCompilationLocal {
 		ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(source));
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
-            logger.info("Entry name = " + entry.getName());
             final Path entryTarget = target.resolve(entry.getName());
             if (entry.isDirectory()) {
                 Files.createDirectory(entryTarget);
@@ -136,6 +140,51 @@ public abstract class AbstractCompilationLocal {
         }
 	}
 	
+	private Path structureSimplatform(Path unzippedDir) throws IOException {
+		String testProjectName = prefix + ".tests";
+		String managerProjectName = prefix + ".manager";
+		
+		// Create new (temp) directory
+		Path parentDir = Files.createTempDirectory("galasa.test.simplatform.parent");
+		parentDir.toFile().deleteOnExit();
+				
+		// Create parent settings file
+		Path parentSettingsFile = parentDir.resolve("settings.gradle");
+		Files.createFile(parentSettingsFile);
+		StringBuilder settingsSB = new StringBuilder();
+		settingsSB.append("include '");
+		settingsSB.append(managerProjectName);
+		settingsSB.append("'\n");
+		settingsSB.append("include '");
+		settingsSB.append(testProjectName);
+		settingsSB.append("'\n");
+		Files.write(parentSettingsFile, settingsSB.toString().getBytes());
+		
+		// Get Manager Files
+		copyDirectory(unzippedDir.resolve("simplatform-main/galasa-simbank-tests/" + managerProjectName + "/"), parentDir.resolve(managerProjectName));
+		// Get Tests
+		copyDirectory(unzippedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName + "/"), parentDir.resolve(testProjectName));
+
+		return parentDir;
+	}
+	
+	private void copyDirectory(Path source, Path target) throws IOException {
+		Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+			@Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                    throws IOException {
+                Files.createDirectories(target.resolve(source.relativize(dir)));
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                    throws IOException {
+                Files.copy(file, target.resolve(source.relativize(file)));
+                return FileVisitResult.CONTINUE;
+            }
+		});
+	}
 	
 	@Test
     public void compile() throws Exception {
