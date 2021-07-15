@@ -18,4 +18,6 @@ public abstract class AbstractCompilationLocal {
 
     abstract protected ILinuxImage getLinuxImage();
 
+    abstract protected IJavaUbuntuInstallation getJavaInstallation();
+
 }
