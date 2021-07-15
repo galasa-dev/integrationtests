@@ -7,10 +7,10 @@ package dev.galasa.inttests.compilation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.gson.JsonObject;
-
 import dev.galasa.Test;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
+import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
+import dev.galasa.linux.ILinuxImage;
 
 public abstract class AbstractCompilationLocal {
 
