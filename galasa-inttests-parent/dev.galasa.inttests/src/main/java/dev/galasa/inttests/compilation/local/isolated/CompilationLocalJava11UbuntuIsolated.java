@@ -32,4 +32,9 @@ public class CompilationLocalJava11UbuntuIsolated extends AbstractCompilationLoc
         return this.ecosystem;
     }
 
+    @Override
+    protected ILinuxImage getLinuxImage() {
+        return this.linuxImage;
+    }
+
 }

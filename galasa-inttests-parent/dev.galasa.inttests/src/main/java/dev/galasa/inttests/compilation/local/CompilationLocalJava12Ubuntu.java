@@ -31,4 +31,9 @@ public class CompilationLocalJava12Ubuntu extends AbstractCompilationLocal {
         return this.ecosystem;
     }
 
+    @Override
+    protected ILinuxImage getLinuxImage() {
+        return this.linuxImage;
+    }
+
 }

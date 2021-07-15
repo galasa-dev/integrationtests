@@ -32,4 +32,9 @@ public class CompilationLocalJava08UbuntuMvp extends AbstractCompilationLocal {
         return this.ecosystem;
     }
 
+    @Override
+    protected ILinuxImage getLinuxImage() {
+        return this.linuxImage;
+    }
+
 }
