@@ -35,6 +35,7 @@ import dev.galasa.http.HttpClient;
 import dev.galasa.http.IHttpClient;
 import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
+import dev.galasa.linux.LinuxManagerException;
 
 public abstract class AbstractCompilationLocal {
 	
@@ -70,26 +71,33 @@ public abstract class AbstractCompilationLocal {
 	private String 		testProjectName;
 	private String 		managerProjectName;
 	
+	private Path simplatformParentDir;
+	
 	@BeforeClass
-	public void setupTest() throws ResourceUnavailableException, IOException {
+	public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException {
 		prefix = "dev.galasa.simbank";
 		testProjectName = prefix + ".tests";
 		managerProjectName = prefix + ".manager";
 
 		
-		Path simDir = setupSimPlatform();
+		simplatformParentDir = setupSimPlatform();
 		
-		logger.info("Simplatform Path:" + simDir.toString());
+		logger.info("Simplatform Path:" + simplatformParentDir.toString());
 	}
 
 	
-	private Path setupSimPlatform() throws ResourceUnavailableException, IOException {
+	private Path setupSimPlatform() throws ResourceUnavailableException, IOException, LinuxManagerException {
 		Path simplatformZip = downloadHttp("https://github.com/galasa-dev/simplatform/archive/main.zip");
 		Path simplatformDir = unzipArchive(simplatformZip);
 		
 		Path simplatformParent = structureSimplatform(simplatformDir);
 		
 		makeChanges(simplatformParent);
+		
+		Path remoteDir = getLinuxImage().getHome();
+		
+		// Upload to linux image
+		copyDirectory(simplatformParent, remoteDir.resolve("simplatform"));
 
 		return simplatformParent; // Eventually return remote dir with correct file(s)
 	}
@@ -183,14 +191,14 @@ public abstract class AbstractCompilationLocal {
 			@Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
                     throws IOException {
-                Files.createDirectories(target.resolve(source.relativize(dir)));
+                Files.createDirectories(target.resolve(source.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                     throws IOException {
-                Files.copy(file, target.resolve(source.relativize(file)));
+                Files.copy(file, target.resolve(source.relativize(file).toString()));
                 return FileVisitResult.CONTINUE;
             }
 		});
@@ -230,6 +238,7 @@ public abstract class AbstractCompilationLocal {
 	@Test
     public void compile() throws Exception {
 		logger.info("Noddy Test");
+		assertThat(true).isTrue();
 	}
 
     abstract protected IGenericEcosystem getEcosystem();
