@@ -29,10 +29,12 @@ import dev.galasa.BeforeClass;
 import dev.galasa.Test;
 import dev.galasa.core.manager.Logger;
 import dev.galasa.core.manager.RunName;
+import dev.galasa.core.manager.TestProperty;
 import dev.galasa.framework.spi.ResourceUnavailableException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.http.HttpClient;
 import dev.galasa.http.IHttpClient;
+import dev.galasa.ipnetwork.IpNetworkManagerException;
 import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxManagerException;
@@ -43,9 +45,9 @@ public abstract class AbstractCompilationLocal {
 	 * TODO
 	 * [x] Download Simplatform
 	 * [x] Unzip Simplatform
-	 * [ ] Move Simplatform files & code to working directory
-	 * [ ] Managers - Change Prefix
-	 * [ ] Tests - Change Prefix
+	 * [x] Move Simplatform files & code to working directory
+	 * [x] Managers - Change Prefix
+	 * [x] Tests - Change Prefix
 	 * Zip:
 	 * 	   [ ] Managers - Add PluginManagement Closure
 	 *     [ ] Managers - Change Repositories 
@@ -54,8 +56,8 @@ public abstract class AbstractCompilationLocal {
 	 *     Isolated: 
 	 *         [ ] Add all managers to test dependencies
 	 * Test:
-	 * [ ] Build Manager
-	 * [ ] Build Tests
+	 * [x] Build Manager
+	 * [x] Build Tests
 	 */
 	
 	@RunName
@@ -71,41 +73,48 @@ public abstract class AbstractCompilationLocal {
 	private String 		testProjectName;
 	private String 		managerProjectName;
 	
-	private Path simplatformParentDir;
+	private Path 		simplatformParentDir;
+	private Path 		gradleBin;
+	
+	@TestProperty(prefix = "gradle.zip",suffix = "location", required = true)
+    public String 		gradleZipLocation;
+	
+	@TestProperty(prefix = "gradle.zip",suffix = "version", required = true)
+    public String 		gradleZipVersion;
 	
 	@BeforeClass
-	public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException {
+	public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException, IpNetworkManagerException {
 		prefix = "dev.galasa.simbank";
 		testProjectName = prefix + ".tests";
 		managerProjectName = prefix + ".manager";
 
-		
 		simplatformParentDir = setupSimPlatform();
 		
-		logger.info("Simplatform Path:" + simplatformParentDir.toString());
+		gradleBin = installGradle();
 	}
 
 	
 	private Path setupSimPlatform() throws ResourceUnavailableException, IOException, LinuxManagerException {
 		Path simplatformZip = downloadHttp("https://github.com/galasa-dev/simplatform/archive/main.zip");
-		Path simplatformDir = unzipArchive(simplatformZip);
+		Path simplatformDir = unzipArchiveToTemp(simplatformZip);
 		
 		Path simplatformParent = structureSimplatform(simplatformDir);
 		
 		makeChanges(simplatformParent);
 		
-		Path remoteDir = getLinuxImage().getHome();
+		Path remoteDir = getLinuxImage().getHome().resolve(runName + "/simplatform");
 		
 		// Upload to linux image
-		copyDirectory(simplatformParent, remoteDir.resolve("simplatform"));
+		copyDirectory(simplatformParent, remoteDir);
 
-		return simplatformParent; // Eventually return remote dir with correct file(s)
+		return remoteDir;
 	}
 	
 	private void makeChanges(Path simplatformParent) throws IOException {
 		renameFiles(simplatformParent);
 		changeAllPrefixes(simplatformParent);
 	}
+	
 		
     private Path downloadHttp(String downloadLocation) throws ResourceUnavailableException {
 
@@ -138,17 +147,18 @@ public abstract class AbstractCompilationLocal {
         }
     }
     
-	private Path unzipArchive(Path zipFile) throws IOException {
+	
+    private Path unzipArchiveToTemp(Path zipFile) throws IOException {
 		Path unzippedDir = Files.createTempDirectory("galasa.test.compilation.unzipped");
 		unzippedDir.toFile().deleteOnExit();
-        
-		unzipArchiveToTarget(zipFile, unzippedDir);
+		
+		unzipSourceToTarget(zipFile, unzippedDir);
 		
 		return unzippedDir;
         
 	}
 	
-	private void unzipArchiveToTarget(Path source, Path target) throws IOException {
+	private void unzipSourceToTarget(Path source, Path target) throws IOException {
 		ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(source));
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -159,6 +169,27 @@ public abstract class AbstractCompilationLocal {
                 Files.copy(zipInputStream, entryTarget);
             }
         }
+	}
+	
+	private Path installGradle() throws ResourceUnavailableException, LinuxManagerException, IOException, IpNetworkManagerException {
+		// Download Gradle
+		Path gradleZip = downloadHttp(gradleZipLocation);
+		Path runLocation = getLinuxImage().getHome().resolve(runName);
+		Path remoteGradleZip = runLocation.resolve("gradle-" + gradleZipVersion + ".zip");
+		Path remoteGradleDir = runLocation.resolve("gradle");
+		
+		// Upload Gradle
+		Files.copy(gradleZip, remoteGradleZip);
+		
+		// Unzip Gradle
+		getLinuxImage().getCommandShell().issueCommand(
+				"unzip " + remoteGradleZip.toString()
+				+ " -d " + remoteGradleDir.toString()
+		);
+		
+		Path gradleWorkingDir = remoteGradleDir.resolve("gradle-" + gradleZipVersion + "/bin");
+		
+		return gradleWorkingDir;
 	}
 	
 	private Path structureSimplatform(Path unzippedDir) throws IOException {
@@ -187,7 +218,7 @@ public abstract class AbstractCompilationLocal {
 	}
 	
 	private void copyDirectory(Path source, Path target) throws IOException {
-		Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+		logger.info("Copying Directory: " + source.toString() + " to " + target.toString());		Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
 			@Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
                     throws IOException {
@@ -205,40 +236,62 @@ public abstract class AbstractCompilationLocal {
 	}
 	
 	private void renameFiles(Path simplatformParent) throws IOException {
+		logger.info("Renaming example files");
 		Path managerDir = simplatformParent.resolve(managerProjectName);
 		Path testDir = simplatformParent.resolve(testProjectName);
 		
+        // Manager
 		Files.move(managerDir.resolve("settings-example.gradle"), managerDir.resolve("settings.gradle"));		
 		Files.move(managerDir.resolve("build-example.gradle"), managerDir.resolve("build.gradle"));
 		Files.move(managerDir.resolve("bnd-example.bnd"), managerDir.resolve("bnd.bnd"));
 		
+        // Tests
 		Files.move(testDir.resolve("settings-example.gradle"), testDir.resolve("settings.gradle"));		
 		Files.move(testDir.resolve("build-example.gradle"), testDir.resolve("build.gradle"));
 		Files.move(testDir.resolve("bnd-example.bnd"), testDir.resolve("bnd.bnd"));
 		
 	}
 	
+	
 	private void changeAllPrefixes(Path simplatformParent) throws IOException {
-		// manager build
+        // Manager
 		changePrefix(simplatformParent.resolve(managerProjectName + "/build.gradle"));
-		// manager settings
 		changePrefix(simplatformParent.resolve(managerProjectName + "/settings.gradle"));
-		// test build
+        // Tests
 		changePrefix(simplatformParent.resolve(testProjectName + "/build.gradle"));
-		// test settings
 		changePrefix(simplatformParent.resolve(testProjectName + "/settings.gradle"));
 	}
 	
+	
 	private void changePrefix(Path file) throws IOException {
+		
 		String fileData = new String(Files.readAllBytes(file), Charset.defaultCharset());
     	fileData = fileData.replace("%%prefix%%", prefix);
     	Files.write(file, fileData.getBytes());
+    	logger.info("Prefix in " + file.toString() + " changed.");
 	}
+
 	
 	@Test
     public void compile() throws Exception {
-		logger.info("Noddy Test");
+		logger.info("Compilation Test");
 		assertThat(true).isTrue();
+		
+		String javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
+		
+		logger.info("Running Gradle Build");
+		String managerBuildResults = getLinuxImage().getCommandShell().issueCommand(
+			javaHomeCommand + "; "
+			// Go to project directory
+			+ "cd " + simplatformParentDir.toString() + "; "
+			// Build using Gradle
+			+ gradleBin.toString() + "/gradle "
+			+ "-Dgradle.user.home=" + getLinuxImage().getHome().resolve(runName) + "/.gradle"
+			+ "--offline --info "
+			+ "build"
+		);
+		assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
+		logger.info(managerBuildResults);
 	}
 
     abstract protected IGenericEcosystem getEcosystem();
