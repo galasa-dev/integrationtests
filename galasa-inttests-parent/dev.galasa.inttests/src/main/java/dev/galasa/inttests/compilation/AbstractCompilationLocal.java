@@ -110,9 +110,10 @@ public abstract class AbstractCompilationLocal {
 		return remoteDir;
 	}
 	
-	private void makeChanges(Path simplatformParent) throws IOException {
+	protected void makeChanges(Path simplatformParent) throws IOException {
 		renameFiles(simplatformParent);
 		changeAllPrefixes(simplatformParent);
+		logger.info("Calling NON-Overridden Method");
 	}
 	
 		
@@ -235,7 +236,7 @@ public abstract class AbstractCompilationLocal {
 		});
 	}
 	
-	private void renameFiles(Path simplatformParent) throws IOException {
+	protected void renameFiles(Path simplatformParent) throws IOException {
 		logger.info("Renaming example files");
 		Path managerDir = simplatformParent.resolve(managerProjectName);
 		Path testDir = simplatformParent.resolve(testProjectName);
@@ -253,7 +254,7 @@ public abstract class AbstractCompilationLocal {
 	}
 	
 	
-	private void changeAllPrefixes(Path simplatformParent) throws IOException {
+	protected void changeAllPrefixes(Path simplatformParent) throws IOException {
         // Manager
 		changePrefix(simplatformParent.resolve(managerProjectName + "/build.gradle"));
 		changePrefix(simplatformParent.resolve(managerProjectName + "/settings.gradle"));
@@ -287,7 +288,7 @@ public abstract class AbstractCompilationLocal {
 			// Build using Gradle
 			+ gradleBin.toString() + "/gradle "
 			+ "-Dgradle.user.home=" + getLinuxImage().getHome().resolve(runName) + "/.gradle"
-			+ "--offline --info "
+			+ "--info "
 			+ "build"
 		);
 		assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
