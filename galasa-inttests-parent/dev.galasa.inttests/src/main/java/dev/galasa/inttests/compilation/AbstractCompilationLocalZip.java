@@ -71,7 +71,8 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
      */
     protected void updateMavenRepo(Path fileToChange) throws IOException {
 		String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
-    	
+    	logger.info("Replacing occurences of mavenCentral() with a link to the unzipped archive in file: "
+    			+ fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
     	fileData = fileData.replace("mavenCentral()",
     			"maven {\n" +
     			"        url=\"file://" + ((ILocalEcosystem) getEcosystem()).getIsolatedDirectory() + "/maven\"\n" + 
@@ -84,6 +85,8 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
      * Inserts pluginManagement closure at the start of the specified file.
      */
     protected void addPluginManagementRepo (Path gradleSettingsFile) throws IOException {
+    	logger.info("Adding pluginManagement closure to: " 
+    			+ gradleSettingsFile.getName(gradleSettingsFile.getNameCount()-2) + "/" + gradleSettingsFile.getFileName());
     	
     	String fileData = new String(Files.readAllBytes(gradleSettingsFile), Charset.defaultCharset());
     	String pluginClosure = "pluginManagement {\n" + 
@@ -100,8 +103,10 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
      * Adds a "constraints" closure in the file specified.
      */
     protected void addDependencyConstraints(Path fileToChange) throws IOException {
+    	logger.info("Adding constraints (for http packages) to: " 
+    			+ fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
+    	
     	String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
-	  	
     	String constraints = 
     		"    constraints {\n" + 
 			"        implementation('commons-codec:commons-codec:1.15'){\n" + 
@@ -129,6 +134,9 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
      * Change selenium manager to require less, in the file specified.
      */
     protected void addImplementationConstraints(Path fileToChange) throws IOException {
+    	logger.info("Adding constraints (for selenium manager) to: " 
+    			+ fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
+    	
     	String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
 	  	
     	String constraints = 
@@ -154,8 +162,10 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     }
     
 	protected void addManagerDependencies(Path fileToChange, String[] dependencies) throws IOException {
+		logger.info("Adding managers (as dependencies) to: " 
+    			+ fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
 		String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
-	  	   	
+	  	
     	// Regex Matches:
     	// Match 1: The dependencies closure, as well as whatever is inside it, up until just before the final, closing, curly brace.
     	// Match 2: The final, closing, curly brace.
