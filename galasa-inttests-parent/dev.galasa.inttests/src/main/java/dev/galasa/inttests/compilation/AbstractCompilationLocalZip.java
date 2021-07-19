@@ -11,6 +11,60 @@ import dev.galasa.galasaecosystem.ILocalEcosystem;
 
 public abstract class AbstractCompilationLocalZip extends AbstractCompilationLocal {
 	
+	protected String[] mvpManagers = {
+		"dev.galasa.core.manager",
+		"dev.galasa.artifact.manager",
+		"dev.galasa.http.manager",
+		"dev.galasa.docker.manager",
+		"dev.galasa.cicsts.ceci.manager",
+		"dev.galasa.zos3270.manager"
+	};
+	
+	protected String[] allManagers = {
+		"dev.galasa.windows.manager",
+		"dev.galasa.zosunixcommand.ssh.manager",
+		"dev.galasa.zos3270.manager",
+		"dev.galasa.zosfile.rseapi.manager",
+		"dev.galasa.zosbatch.rseapi.manager",
+		"dev.galasa.zosrseapi.manager",
+		"dev.galasa.zos.manager",
+		"dev.galasa.zosliberty.manager",
+		"dev.galasa.zostsocommand.ssh.manager",
+		"dev.galasa.zosmf.manager",
+		"dev.galasa.zosconsole.zosmf.manager",
+		"dev.galasa.zosprogram.manager",
+		"dev.galasa.zosbatch.zosmf.manager",
+		"dev.galasa.zosfile.zosmf.manager",
+		"dev.galasa.zosconsole.oeconsol.manager",
+		"dev.galasa.jmeter.manager",
+		"dev.galasa.selenium.manager",
+		"dev.galasa.java.ubuntu.manager",
+		"dev.galasa.java.windows.manager",
+		"dev.galasa.java.manager",
+		"dev.galasa.textscan.manager",
+		"dev.galasa.core.manager",
+		"dev.galasa.artifact.manager",
+		"dev.galasa.galasaecosystem.manager",
+		"dev.galasa.phoenix2.manager",
+		"dev.galasa.elasticlog.manager",
+		"dev.galasa.ipnetwork.manager",
+		"dev.galasa.http.manager",
+		"dev.galasa.liberty.manager",
+		"dev.galasa.kubernetes.manager",
+		"dev.galasa.openstack.manager",
+		"dev.galasa.docker.manager",
+		"dev.galasa.cicsts.ceda.manager",
+		"dev.galasa.cicsts.manager",
+		"dev.galasa.cicsts.ceci.manager",
+		"dev.galasa.cicsts.resource.manager",
+		"dev.galasa.cicsts.cemt.manager",
+		"dev.galasa.linux.manager",
+		"dev.galasa.artifact.manager",
+		"dev.galasa.http.manager",
+		"dev.galasa.artifact.manager",
+		"dev.galasa.http.manager"
+	};
+	
 	/*
      * Within the specified file, this method replaces occurrences of mavenCentral() with the 
      * appropriate local maven repository closure.
@@ -98,5 +152,34 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     	
     	Files.write(fileToChange, fileData.getBytes());
     }
+    
+	protected void addManagerDependencies(Path fileToChange, String[] dependencies) throws IOException {
+		String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
+	  	   	
+    	// Regex Matches:
+    	// Match 1: The dependencies closure, as well as whatever is inside it, up until just before the final, closing, curly brace.
+    	// Match 2: The final, closing, curly brace.
+    	String regex = "(dependencies \\{[\\n\\r\\sa-zA-Z0-9\\'\\.\\:\\+\\-\\(\\)]+)(\\})";
+    	Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+    	Matcher matcher = pattern.matcher(fileData);
+    	matcher.find();
+    	
+    	String incumbentDependencyClosure = matcher.group(1);
+    	String postClosure = matcher.group(2);
+    	
+    	// Iterate dependencies
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0; i < dependencies.length; i++) {
+    		if (!incumbentDependencyClosure.contains(dependencies[i])) {
+    			sb.append("\timplementation 'dev.galasa:" + dependencies[i] + ":0.+'\n");
+    		}
+        }
+    	
+    	// Insert the dependencies between match 1 (dependencies) and match 2 (closing brace)
+    	fileData = fileData.replace(matcher.group(0), incumbentDependencyClosure.concat(sb.toString()).concat(postClosure));
+    	
+    	Files.write(fileToChange, fileData.getBytes());
+		
+	}
 
 }
