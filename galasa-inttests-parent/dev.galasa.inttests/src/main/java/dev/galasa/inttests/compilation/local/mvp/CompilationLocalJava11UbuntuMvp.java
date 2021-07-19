@@ -48,10 +48,12 @@ public class CompilationLocalJava11UbuntuMvp extends AbstractCompilationLocalZip
 		
 		// Alter test project
 		updateMavenRepo(testBuildGradle);
+		// Add a list of managers to the test(s)
+		addManagerDependencies(testBuildGradle, allManagers);
 		addDependencyConstraints(testBuildGradle);
 		addImplementationConstraints(testBuildGradle);
 		
-	}
+    }
 
     @Override
     protected IGenericEcosystem getEcosystem() {
