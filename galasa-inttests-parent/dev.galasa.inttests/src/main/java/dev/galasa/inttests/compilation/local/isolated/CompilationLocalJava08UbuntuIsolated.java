@@ -33,7 +33,7 @@ public class CompilationLocalJava08UbuntuIsolated extends AbstractCompilationLoc
     public IJavaUbuntuInstallation java;
 
     @Override
-    protected void makeChanges(Path simplatformParent) throws IOException {
+    protected void refactorSimplatform(Path simplatformParent) throws IOException {
 		renameFiles(simplatformParent);
 		changeAllPrefixes(simplatformParent);
 		
@@ -55,14 +55,7 @@ public class CompilationLocalJava08UbuntuIsolated extends AbstractCompilationLoc
 		addDependencyConstraints(testBuildGradle);
 		addImplementationConstraints(testBuildGradle);
 		
-
 	}
-    
-    private void printFileContents(Path fileToPrint) throws IOException {
-    	String fileData = new String(Files.readAllBytes(fileToPrint), Charset.defaultCharset());
-    	logger.info("Printing File: " + fileToPrint.getName(fileToPrint.getNameCount()-2) + "/" + fileToPrint.getFileName());
-    	logger.info(fileData);
-    }
     
     @Override
     protected IGenericEcosystem getEcosystem() {

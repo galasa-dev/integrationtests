@@ -31,7 +31,7 @@ public class CompilationLocalJava08UbuntuMvp extends AbstractCompilationLocalZip
     public IJavaUbuntuInstallation java;
 
     @Override
-    protected void makeChanges(Path simplatformParent) throws IOException {
+    protected void refactorSimplatform(Path simplatformParent) throws IOException {
 		renameFiles(simplatformParent);
 		changeAllPrefixes(simplatformParent);
 		
@@ -49,7 +49,7 @@ public class CompilationLocalJava08UbuntuMvp extends AbstractCompilationLocalZip
 		// Alter test project
 		updateMavenRepo(testBuildGradle);
 		// Add a list of managers to the test(s)
-		addManagerDependencies(testBuildGradle, allManagers);
+		addManagerDependencies(testBuildGradle, mvpManagers);
 		addDependencyConstraints(testBuildGradle);
 		addImplementationConstraints(testBuildGradle);
 		

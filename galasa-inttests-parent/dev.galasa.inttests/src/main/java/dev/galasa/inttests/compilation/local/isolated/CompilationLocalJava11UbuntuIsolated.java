@@ -31,7 +31,7 @@ public class CompilationLocalJava11UbuntuIsolated extends AbstractCompilationLoc
     public IJavaUbuntuInstallation java;
     
     @Override
-    protected void makeChanges(Path simplatformParent) throws IOException {
+    protected void refactorSimplatform(Path simplatformParent) throws IOException {
 		renameFiles(simplatformParent);
 		changeAllPrefixes(simplatformParent);
 		
