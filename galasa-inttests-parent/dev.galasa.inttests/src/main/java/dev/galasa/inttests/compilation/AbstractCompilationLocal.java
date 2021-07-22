@@ -45,44 +45,50 @@ public abstract class AbstractCompilationLocal {
     public String         runName;
     
     @Logger
-    public Log           logger;
+    public Log              logger;
     
     @HttpClient
-    public IHttpClient     client;
+    public IHttpClient      client;
     
-    private String         prefix;
-    private String         testProjectName;
-    private String         managerProjectName;
+    private String          prefix = "dev.galasa.simbank";
+    private String          testProjectName = prefix + ".tests";
+    private String          managerProjectName = prefix + ".manager";
     
-    private Path         simplatformParentDir;
-    private Path         gradleBin;
+    private Path            simplatformParentDir;
+    private Path            gradleBin;
     
     @TestProperty(prefix = "gradle.zip",suffix = "location", required = true)
-    public String         gradleZipLocation;
+    public String           gradleZipLocation;
     
     @TestProperty(prefix = "gradle.zip",suffix = "version", required = true)
-    public String         gradleZipVersion;
+    public String           gradleZipVersion;
+    
+    String                  javaHomeCommand;
     
     /*
+     * Initialise all resources needed for testing.
      * 
      */
     @BeforeClass
     public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException, IpNetworkManagerException {
-        prefix = "dev.galasa.simbank";
-        testProjectName = prefix + ".tests";
-        managerProjectName = prefix + ".manager";
-
-        simplatformParentDir = setupSimPlatform();
+        javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
         
+        simplatformParentDir = setupSimPlatform();
         gradleBin = installGradle();
     }
 
-    
+    /*
+     * Download simplatform (github main branch), unzipp simplatform, then structure 
+     * and edit the directory and files it in such a way that they are usable by gradle.
+     * 
+     * @return  remoteDirectory     the parent directory of the structured, edited, and usable simplatform project.
+     * 
+     */
     private Path setupSimPlatform() throws ResourceUnavailableException, IOException, LinuxManagerException {
         logger.info("Downloading simplatform repository archive - main branch.");
         Path simplatformZip = downloadHttp("https://github.com/galasa-dev/simplatform/archive/main.zip");
         logger.info("Unzipping simplatform repository archive");
-        Path simplatformDir = unzipArchiveToTemp(simplatformZip);
+        Path simplatformDir = unpackArchiveToTemp(simplatformZip);
         logger.info("Set up repository");
         Path simplatformParent = structureSimplatform(simplatformDir);
         
@@ -96,12 +102,23 @@ public abstract class AbstractCompilationLocal {
         return remoteDir;
     }
     
+    /*
+     * Parent method for renaming of files and changing of prefixes.
+     * To be overridden by subclasses to make further changes (e.g. building from isolated zip requires more changes)  
+     * 
+     * @param   simplatformParent   the path to the parent directory of the simplatform project
+     */
     protected void refactorSimplatform(Path simplatformParent) throws IOException {
         renameFiles(simplatformParent);
         changeAllPrefixes(simplatformParent);
     }
     
-        
+    /*
+     * Method for downloading a resource from a http location.
+     * 
+     * @param   downloadLocation    string containing the url of the resource to be downloaded
+     * @return  tempFile            the temporary location of the file that was downloaded.
+     */
     private Path downloadHttp(String downloadLocation) throws ResourceUnavailableException {
 
         logger.trace("Retrieving Http Resource: " + downloadLocation);
@@ -133,20 +150,33 @@ public abstract class AbstractCompilationLocal {
         }
     }
     
-    
-    private Path unzipArchiveToTemp(Path zipFile) throws IOException {
-        logger.trace("Unzipping: " + zipFile.toString());
-        Path unzippedDir = Files.createTempDirectory("galasa.test.compilation.unzipped");
-        unzippedDir.toFile().deleteOnExit();
+    /*
+     * Unpacks specified archive to a temporary location, then passes back the path to the temporary location.
+     * 
+     * @param   archiveFile             path to the archive to be downloaded
+     * @return  unpackedDir             path to the directory containing the unpacked archive
+     * @see     unpackSourceToTarget
+     */
+    private Path unpackArchiveToTemp(Path archiveFile) throws IOException {
+        logger.trace("Unzipping: " + archiveFile.toString());
+        Path unpackedDir = Files.createTempDirectory("galasa.test.compilation.unpacked");
+        unpackedDir.toFile().deleteOnExit();
         
-        unzipSourceToTarget(zipFile, unzippedDir);
+        unpackSourceToTarget(archiveFile, unpackedDir);
         
-        return unzippedDir;
+        return unpackedDir;
         
     }
     
-    private void unzipSourceToTarget(Path source, Path target) throws IOException {
-        logger.trace("Unzipping: " + source.toString() + " to " + target.toString());
+    /*
+     * Unpacks the specified source archive to the specified target directory.
+     * 
+     * @param   source  the archive to be unpacked
+     * @param   target  the directory to unpack the source to
+     * 
+     */
+    private void unpackSourceToTarget(Path source, Path target) throws IOException {
+        logger.trace("Unpacking: " + source.toString() + " to " + target.toString());
         ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(source));
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -159,6 +189,11 @@ public abstract class AbstractCompilationLocal {
         }
     }
     
+    /*
+     * Installs gradle (Download locally, upload to image, and unzip on image), 
+     * then returns the path to the gradle bin directory. 
+     * 
+     */
     private Path installGradle() throws ResourceUnavailableException, LinuxManagerException, IOException, IpNetworkManagerException {
         // Download Gradle
         logger.info("Installing Gradle");
@@ -186,8 +221,9 @@ public abstract class AbstractCompilationLocal {
         
         Path gradleWorkingDir = remoteGradleDir.resolve("gradle-" + gradleZipVersion + "/bin");
         
-        logger.trace("Checking unzipped gradle version");
+        logger.trace("Checking unpacked gradle version");
         String gradleVersion = getLinuxImage().getCommandShell().issueCommand(
+                javaHomeCommand + "; " +
                 gradleWorkingDir + "/gradle -v"
         );
         
@@ -196,12 +232,21 @@ public abstract class AbstractCompilationLocal {
         return gradleWorkingDir;
     }
     
-    private Path structureSimplatform(Path unzippedDir) throws IOException {
+    
+    /*
+     * Retrieves the necessary source files from the unpacked simplatform archive and 
+     * structures them in a parent directory, along with a parent settings file.
+     * 
+     * @param   unpackedDir     The directory containing he unpackaged simplatform archive  
+     * @return  parentDir       The parent directory of the newly structured simplatform parent project
+     * 
+     */
+    private Path structureSimplatform(Path unpackedDir) throws IOException {
         // Create new (temp) directory
         logger.trace("Creating project parent directory (for manager and tests)");
         Path parentDir = Files.createTempDirectory("galasa.test.simplatform.parent");
         parentDir.toFile().deleteOnExit();
-                
+        
         // Create parent settings file
         
         logger.trace("Creating settings.gradle");
@@ -218,14 +263,21 @@ public abstract class AbstractCompilationLocal {
         
         // Get Manager Files
         logger.trace("Copying managers source into parent directory");
-        copyDirectory(unzippedDir.resolve("simplatform-main/galasa-simbank-tests/" + managerProjectName + "/"), parentDir.resolve(managerProjectName));
+        copyDirectory(unpackedDir.resolve("simplatform-main/galasa-simbank-tests/" + managerProjectName + "/"), parentDir.resolve(managerProjectName));
         // Get Tests
         logger.trace("Copying tests source into parent directory");
-        copyDirectory(unzippedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName + "/"), parentDir.resolve(testProjectName));
+        copyDirectory(unpackedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName + "/"), parentDir.resolve(testProjectName));
 
         return parentDir;
     }
     
+    /*
+     * Copy a directory to another directory using nio Files.
+     * 
+     * @param   source      The directory from which to copy files / directories  
+     * @param   target      The directory to which files / directories will be copied
+     * 
+     */
     private void copyDirectory(Path source, Path target) throws IOException {
         logger.info("Copying Directory: " + source.toString() + " to " + target.toString());        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
             @Override
@@ -244,6 +296,11 @@ public abstract class AbstractCompilationLocal {
         });
     }
     
+    /*
+     * Ranames the example files with names that gradle will recognise.
+     * 
+     * @param   simplatformParent   The directory of the simplatform project
+     */
     protected void renameFiles(Path simplatformParent) throws IOException {
         logger.trace("Renaming example files");
         Path managerDir = simplatformParent.resolve(managerProjectName);
@@ -261,7 +318,12 @@ public abstract class AbstractCompilationLocal {
         
     }
     
-    
+    /*
+     * Ranames the prefix placeholders within the build and settings files of the 
+     * manager and test projects.
+     * 
+     * @param   simplatformParent   The directory of the simplatform project
+     */
     protected void changeAllPrefixes(Path simplatformParent) throws IOException {
         // Manager
         changePrefix(simplatformParent.resolve(managerProjectName + "/build.gradle"));
@@ -271,7 +333,11 @@ public abstract class AbstractCompilationLocal {
         changePrefix(simplatformParent.resolve(testProjectName + "/settings.gradle"));
     }
     
-    
+    /*
+     * Ranames the prefix placeholders within the specified file
+     * 
+     * @param   file   The file in which the prefix will be changed.
+     */
     private void changePrefix(Path file) throws IOException {
         String incumbent = "%%prefix%%";
         String fileData = new String(Files.readAllBytes(file), Charset.defaultCharset());
@@ -280,12 +346,15 @@ public abstract class AbstractCompilationLocal {
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
     }
     
+    /*
+     * Runs and gradle build against the prepared simplatform code.
+     * Passes if "BUILD SUCCESSFUL" appears in the output.
+     * 
+     */
     @Test
     public void compile() throws Exception {
         logger.info("Compilation Test");
-                
-        String javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
-            
+        
         logger.info("Running Gradle Build");
         
         String buildCommand = javaHomeCommand + "; "
@@ -304,11 +373,23 @@ public abstract class AbstractCompilationLocal {
         
         assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
     }
-
+    
+    /*
+     * @return  ecosystem   the ecosystem instance associated with the test.
+     * 
+     */
     abstract protected IGenericEcosystem getEcosystem();
-
+    
+    /*
+     * @return  linuxImage  the linux image instance associated with the test.
+     * 
+     */
     abstract protected ILinuxImage getLinuxImage();
 
+    /*
+     * @return  javaInstallation    the java installation instance associated with the test.
+     * 
+     */
     abstract protected IJavaUbuntuInstallation getJavaInstallation();
 
 }
