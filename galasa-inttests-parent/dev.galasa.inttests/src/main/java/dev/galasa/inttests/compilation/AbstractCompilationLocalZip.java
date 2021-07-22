@@ -66,8 +66,11 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
 	};
 	
 	/*
-     * Within the specified file, this method replaces occurrences of mavenCentral() with the 
-     * appropriate local maven repository closure.
+	 * For use when changing source code to work with the isolated zip (either mvp or full).
+     * Specify a file to work against. This method will take the contents of that file, and 
+     * replace occurrences of mavenCentral() with the appropriate local maven repository closure.
+     * 
+     * @param fileToChange the path to the file that needs updating
      */
     protected void updateMavenRepo(Path fileToChange) throws IOException {
 		String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
@@ -82,7 +85,11 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     }
     
     /*
-     * Inserts pluginManagement closure at the start of the specified file.
+	 * For use when changing source code to work with the isolated zip (either mvp or full).
+     * Specify a file to work against. This method will take insert a pluginManagement closure at 
+     * the beginning of that file. 
+     * 
+     * @param gradleSettingsFile the path to the file that needs updating
      */
     protected void addPluginManagementRepo (Path gradleSettingsFile) throws IOException {
     	logger.info("Adding pluginManagement closure to: " 
@@ -100,7 +107,13 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     }
     
     /*
-     * Adds a "constraints" closure in the file specified.
+     * For use when changing source code to work with the isolated zip (either mvp or full).
+     * Specify a file to work against. This method will take insert a constraints closure within 
+     * the dependencies closure of that file. 
+     * 
+     * NOTE: enforces explicit versions of commons-coden and httpcore
+     * 
+     * @param fileToChange the path to the file that needs updating
      */
     protected void addDependencyConstraints(Path fileToChange) throws IOException {
     	logger.info("Adding constraints (for http packages) to: " 
@@ -131,7 +144,11 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     }
        
     /*
-     * Change selenium manager to require less, in the file specified.
+     * For use when changing source code to work with the isolated zip (either mvp or full).
+     * Specify a file to work against. This method will alter the selenium manager depedency
+     * to exclude several unnecessary packages that aren't available in the zip.
+     * 
+     * @param fileToChange the path to the file that needs updating
      */
     protected void addImplementationConstraints(Path fileToChange) throws IOException {
     	logger.info("Adding constraints (for selenium manager) to: " 
@@ -161,6 +178,14 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
     	Files.write(fileToChange, fileData.getBytes());
     }
     
+    /*
+     * For use when changing source code to work with the isolated zip (either mvp or full).
+     * Specify a file to work against. This method will add all the dependencies specified in 
+     * the `dependencies` parameter, to the file specified (fileToChange)
+     * 
+     * @param fileToChange the path to the file that needs updating
+     * @param dependencies an array of manager names to be added (all must be within the dev.galasa group)
+     */
 	protected void addManagerDependencies(Path fileToChange, String[] dependencies) throws IOException {
 		logger.info("Adding managers (as dependencies) to: " 
     			+ fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
