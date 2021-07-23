@@ -21,7 +21,6 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
         "dev.galasa.artifact.manager",
         "dev.galasa.http.manager",
         "dev.galasa.docker.manager",
-        "dev.galasa.cicsts.ceci.manager",
         "dev.galasa.zos3270.manager"
     };
     
