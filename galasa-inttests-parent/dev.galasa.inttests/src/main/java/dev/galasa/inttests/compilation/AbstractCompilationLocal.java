@@ -17,6 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -60,7 +62,6 @@ public abstract class AbstractCompilationLocal {
     @TestProperty(prefix = "gradle.zip",suffix = "location", required = true)
     public String           gradleZipLocation;
     
-    @TestProperty(prefix = "gradle.zip",suffix = "version", required = true)
     public String           gradleZipVersion;
     
     String                  javaHomeCommand;
@@ -73,8 +74,24 @@ public abstract class AbstractCompilationLocal {
     public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException, IpNetworkManagerException {
         javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
         
+        gradleZipVersion = getGradleVersion();
         simplatformParentDir = setupSimPlatform();
         gradleBin = installGradle();
+    }
+    
+    /*
+     * Extracts the version from the gradle zip path
+     */
+    
+    public String getGradleVersion() {
+        final String regex = "gradle-(\\d+\\.\\d+\\.\\d+)-bin\\.zip";
+
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Matcher matcher = pattern.matcher(gradleZipLocation);
+        matcher.find();
+        gradleZipVersion = matcher.group(1);
+        
+        return gradleZipVersion;
     }
 
     /*
