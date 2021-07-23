@@ -54,7 +54,7 @@ public class CompilationLocalJava11UbuntuMvp extends AbstractCompilationLocalZip
         // Alter test project
         updateMavenRepo(testBuildGradle);
         // Add a list of managers to the test(s)
-        addManagerDependencies(testBuildGradle, allManagers);
+        addManagerDependencies(testBuildGradle, mvpManagers);
         addDependencyConstraints(testBuildGradle);
         addImplementationConstraints(testBuildGradle);
         
