@@ -37,28 +37,28 @@ public class CompilationLocalJava08UbuntuMvp extends AbstractCompilationLocalZip
 
     @Override
     protected void refactorSimplatform(Path simplatformParent) throws IOException {
-		renameFiles(simplatformParent);
-		changeAllPrefixes(simplatformParent);
-		
-		Path managerBuildGradle = simplatformParent.resolve("dev.galasa.simbank.manager/build.gradle");
-		Path testBuildGradle = simplatformParent.resolve("dev.galasa.simbank.tests/build.gradle");
-		Path parentSettings = simplatformParent.resolve("settings.gradle");
-		
-		// Alter project parent
-		addPluginManagementRepo(parentSettings);
-		
-		// Alter manager project
-		updateMavenRepo(managerBuildGradle); 
-		addDependencyConstraints(managerBuildGradle);
-		
-		// Alter test project
-		updateMavenRepo(testBuildGradle);
-		// Add a list of managers to the test(s)
-		addManagerDependencies(testBuildGradle, mvpManagers);
-		addDependencyConstraints(testBuildGradle);
-		addImplementationConstraints(testBuildGradle);
-		
-	}
+        renameFiles(simplatformParent);
+        changeAllPrefixes(simplatformParent);
+        
+        Path managerBuildGradle = simplatformParent.resolve("dev.galasa.simbank.manager/build.gradle");
+        Path testBuildGradle = simplatformParent.resolve("dev.galasa.simbank.tests/build.gradle");
+        Path parentSettings = simplatformParent.resolve("settings.gradle");
+        
+        // Alter project parent
+        addPluginManagementRepo(parentSettings);
+        
+        // Alter manager project
+        updateMavenRepo(managerBuildGradle); 
+        addDependencyConstraints(managerBuildGradle);
+        
+        // Alter test project
+        updateMavenRepo(testBuildGradle);
+        // Add a list of managers to the test(s)
+        addManagerDependencies(testBuildGradle, mvpManagers);
+        addDependencyConstraints(testBuildGradle);
+        addImplementationConstraints(testBuildGradle);
+        
+    }
 
     @Override
     protected IGenericEcosystem getEcosystem() {
