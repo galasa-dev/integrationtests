@@ -362,7 +362,7 @@ public abstract class AbstractCompilationLocal {
                 // Build using Gradle
                 + gradleBin.toString() + "/gradle "
                 + "-Dgradle.user.home=" + getLinuxImage().getHome().resolve(runName) + "/.gradle"
-                + "--console"
+                + "--console "
                 + "build";
         
         logger.info("Issuing Command:");
