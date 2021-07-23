@@ -232,7 +232,6 @@ public abstract class AbstractCompilationLocal {
         return gradleWorkingDir;
     }
     
-    
     /*
      * Retrieves the necessary source files from the unpacked simplatform archive and 
      * structures them in a parent directory, along with a parent settings file.
