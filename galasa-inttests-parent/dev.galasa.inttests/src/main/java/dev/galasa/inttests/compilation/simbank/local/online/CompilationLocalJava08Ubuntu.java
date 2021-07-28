@@ -3,7 +3,7 @@
  * 
  * (c) Copyright IBM Corp. 2021.
  */
-package dev.galasa.inttests.compilation.simbank.local;
+package dev.galasa.inttests.compilation.simbank.local.online;
 
 import dev.galasa.Test;
 import dev.galasa.TestAreas;

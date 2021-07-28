@@ -3,7 +3,7 @@
  * 
  * (c) Copyright IBM Corp. 2021.
  */
-package dev.galasa.inttests.compilation.simbank.local.isolated;
+package dev.galasa.inttests.compilation.simbank.local.offline.isolated;
 
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
@@ -20,8 +20,8 @@ import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
 
 @Test
-@TestAreas({"compilation","localecosystem","java08","ubuntu","isolated"})
-public class CompilationLocalJava08UbuntuIsolated extends AbstractCompilationLocalSimBankOffline {
+@TestAreas({"compilation","localecosystem","java11","ubuntu","isolated"})
+public class CompilationLocalJava11UbuntuIsolated extends AbstractCompilationLocalSimBankOffline {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Full)
     public ILocalEcosystem ecosystem;
@@ -29,7 +29,7 @@ public class CompilationLocalJava08UbuntuIsolated extends AbstractCompilationLoc
     @LinuxImage(operatingSystem = OperatingSystem.ubuntu, capabilities = "isolated")
     public ILinuxImage linuxImage;
     
-    @JavaUbuntuInstallation(javaVersion = JavaVersion.v8)
+    @JavaUbuntuInstallation(javaVersion = JavaVersion.v11)
     public IJavaUbuntuInstallation java;
     
     @Override
