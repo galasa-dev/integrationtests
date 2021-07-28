@@ -3,7 +3,7 @@
  * 
  * (c) Copyright IBM Corp. 2021.
  */
-package dev.galasa.inttests.compilation;
+package dev.galasa.inttests.compilation.simbank;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -14,60 +14,30 @@ import java.util.regex.Pattern;
 
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 
-public abstract class AbstractCompilationLocalZip extends AbstractCompilationLocal {
+public abstract class AbstractCompilationLocalSimBankOffline extends AbstractCompilationLocalSimBank {
     
-    protected String[] mvpManagers = {
-        "dev.galasa.core.manager",
-        "dev.galasa.artifact.manager",
-        "dev.galasa.http.manager",
-        "dev.galasa.docker.manager",
-        "dev.galasa.zos3270.manager"
-    };
-    
-    protected String[] allManagers = {
-        "dev.galasa.windows.manager",
-        "dev.galasa.zosunixcommand.ssh.manager",
-        "dev.galasa.zos3270.manager",
-        "dev.galasa.zosfile.rseapi.manager",
-        "dev.galasa.zosbatch.rseapi.manager",
-        "dev.galasa.zosrseapi.manager",
-        "dev.galasa.zos.manager",
-        "dev.galasa.zosliberty.manager",
-        "dev.galasa.zostsocommand.ssh.manager",
-        "dev.galasa.zosmf.manager",
-        "dev.galasa.zosconsole.zosmf.manager",
-        "dev.galasa.zosprogram.manager",
-        "dev.galasa.zosbatch.zosmf.manager",
-        "dev.galasa.zosfile.zosmf.manager",
-        "dev.galasa.zosconsole.oeconsol.manager",
-        "dev.galasa.jmeter.manager",
-        "dev.galasa.selenium.manager",
-        "dev.galasa.java.ubuntu.manager",
-        "dev.galasa.java.windows.manager",
-        "dev.galasa.java.manager",
-        "dev.galasa.textscan.manager",
-        "dev.galasa.core.manager",
-        "dev.galasa.artifact.manager",
-        "dev.galasa.galasaecosystem.manager",
-        "dev.galasa.phoenix2.manager",
-        "dev.galasa.elasticlog.manager",
-        "dev.galasa.ipnetwork.manager",
-        "dev.galasa.http.manager",
-        "dev.galasa.liberty.manager",
-        "dev.galasa.kubernetes.manager",
-        "dev.galasa.openstack.manager",
-        "dev.galasa.docker.manager",
-        "dev.galasa.cicsts.ceda.manager",
-        "dev.galasa.cicsts.manager",
-        "dev.galasa.cicsts.ceci.manager",
-        "dev.galasa.cicsts.resource.manager",
-        "dev.galasa.cicsts.cemt.manager",
-        "dev.galasa.linux.manager",
-        "dev.galasa.artifact.manager",
-        "dev.galasa.http.manager",
-        "dev.galasa.artifact.manager",
-        "dev.galasa.http.manager"
-    };
+    @Override
+    protected void refactorSimplatform(Path simplatformParent) throws IOException {
+        renameFiles(simplatformParent);
+        changeAllPrefixes(simplatformParent);
+        
+        Path managerBuildGradle = simplatformParent.resolve("dev.galasa.simbank.manager/build.gradle");
+        Path testBuildGradle = simplatformParent.resolve("dev.galasa.simbank.tests/build.gradle");
+        Path parentSettings = simplatformParent.resolve("settings.gradle");
+        
+        // Alter project parent
+        addPluginManagementRepo(parentSettings);
+        
+        // Alter manager project
+        updateMavenRepo(managerBuildGradle); 
+        addDependencyConstraints(managerBuildGradle);
+        
+        // Alter test project
+        updateMavenRepo(testBuildGradle);
+        // Add a list of managers to the test(s)
+        addDependencyConstraints(testBuildGradle);
+        addImplementationConstraints(testBuildGradle);
+    }
     
     /*
      * For use when changing source code to work with the isolated zip (either mvp or full).
@@ -140,7 +110,11 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
         String regex = "(dependencies \\{[\\n\\r\\sa-zA-Z0-9\\'\\.\\:\\+\\-\\(\\)]+)(\\})";
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(fileData);
-        matcher.find();
+        
+
+		if(!matcher.find()) {
+			throw new IOException("Match not found: " + regex + " => " + fileData);
+		}
         // Insert the constraints closure between match 1 (dependencies) and match 2 (closing brace)
         fileData = fileData.replace(matcher.group(0), matcher.group(1) + constraints + matcher.group(2));
         
@@ -180,45 +154,6 @@ public abstract class AbstractCompilationLocalZip extends AbstractCompilationLoc
         fileData = fileData.replace(matcher.group(0), constraints);
         
         Files.write(fileToChange, fileData.getBytes());
-    }
-    
-    /*
-     * For use when changing source code to work with the isolated zip (either mvp or full).
-     * Specify a file to work against. This method will add all the dependencies specified in 
-     * the `dependencies` parameter, to the file specified (fileToChange)
-     * 
-     * @param fileToChange the path to the file that needs updating
-     * @param dependencies an array of manager names to be added (all must be within the dev.galasa group)
-     */
-    protected void addManagerDependencies(Path fileToChange, String[] dependencies) throws IOException {
-        logger.info("Adding managers (as dependencies) to: " 
-                + fileToChange.getName(fileToChange.getNameCount()-2) + "/" + fileToChange.getFileName());
-        String fileData = new String(Files.readAllBytes(fileToChange), Charset.defaultCharset());
-        
-        // Regex Matches:
-        // Match 1: The dependencies closure, as well as whatever is inside it, up until just before the final, closing, curly brace.
-        // Match 2: The final, closing, curly brace.
-        String regex = "(dependencies \\{[\\n\\r\\sa-zA-Z0-9\\'\\.\\:\\+\\-\\(\\)]+)(\\})";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(fileData);
-        matcher.find();
-        
-        String incumbentDependencyClosure = matcher.group(1);
-        String postClosure = matcher.group(2);
-        
-        // Iterate dependencies
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < dependencies.length; i++) {
-            if (!incumbentDependencyClosure.contains(dependencies[i])) {
-                sb.append("\timplementation 'dev.galasa:" + dependencies[i] + ":0.+'\n");
-            }
-        }
-        
-        // Insert the dependencies between match 1 (dependencies) and match 2 (closing brace)
-        fileData = fileData.replace(matcher.group(0), incumbentDependencyClosure.concat(sb.toString()).concat(postClosure));
-        
-        Files.write(fileToChange, fileData.getBytes());
-        
     }
 
 }
