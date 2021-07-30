@@ -1,0 +1,5 @@
+dev.galasa.core.manager
+dev.galasa.artifact.manager
+dev.galasa.http.manager
+dev.galasa.docker.manager
+dev.galasa.zos3270.manager

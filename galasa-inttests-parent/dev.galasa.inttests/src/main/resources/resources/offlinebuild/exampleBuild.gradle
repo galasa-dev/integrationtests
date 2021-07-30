@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    maven { 
+    	url="file://++REPO++"
+    }
+}
+
+dependencies {
+    implementation 'dev.galasa:dev.galasa:0.+'
+    implementation 'dev.galasa:dev.galasa.framework:0.+'
+	
+++DEPENDENCIES++
+}
