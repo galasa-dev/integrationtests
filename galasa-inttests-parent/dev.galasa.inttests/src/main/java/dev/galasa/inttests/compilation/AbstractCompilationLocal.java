@@ -24,6 +24,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 import dev.galasa.BeforeClass;
 import dev.galasa.Test;
+import dev.galasa.artifact.TestBundleResourceException;
 import dev.galasa.core.manager.Logger;
 import dev.galasa.core.manager.RunName;
 import dev.galasa.core.manager.TestProperty;
@@ -39,7 +40,7 @@ import dev.galasa.linux.LinuxManagerException;
 public abstract class AbstractCompilationLocal {
     
     @RunName
-    public String         	runName;
+    public String           runName;
     
     @Logger
     public Log              logger;
@@ -47,8 +48,8 @@ public abstract class AbstractCompilationLocal {
     @HttpClient
     public IHttpClient      client;
     
-    protected Path            testRunDirectory;
-    protected Path            projectDirectory;
+    protected Path          testRunDirectory;
+    protected Path          projectDirectory;
     private Path            gradleBin;
     
     @TestProperty(prefix = "gradle.zip",suffix = "location", required = true)
@@ -63,7 +64,7 @@ public abstract class AbstractCompilationLocal {
      * 
      */
     @BeforeClass
-    public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException, IpNetworkManagerException {
+    public void setupTest() throws ResourceUnavailableException, IOException, LinuxManagerException, IpNetworkManagerException, TestBundleResourceException {
         javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
         
         testRunDirectory = getLinuxImage().getHome().resolve(runName);
@@ -92,8 +93,8 @@ public abstract class AbstractCompilationLocal {
     /*
      * Method for unpacking an archive on a remote image.
      * 
-     * @param	archive		Path to the remote archive
-     * @param	target		Path to the directory to which archive should be unpacked 
+     * @param   archive     Path to the remote archive
+     * @param   target      Path to the directory to which archive should be unpacked 
      */
     protected void unpackOnRemote(Path archive, Path target) throws IpNetworkManagerException, LinuxManagerException {
         logger.trace("Unzipping archive \"" + archive.toString() + "\" to \"" + target.toString() + "\"");
@@ -148,7 +149,7 @@ public abstract class AbstractCompilationLocal {
      * Installs gradle (Download locally, upload to image, and unzip on image), 
      * then returns the path to the gradle bin directory. 
      * 
-     * @return	gradleWorkingDir	The path to the gradle installation directory.
+     * @return    gradleWorkingDir    The path to the gradle installation directory.
      */
     private Path installGradle() throws ResourceUnavailableException, LinuxManagerException, IOException, IpNetworkManagerException {
         // Download Gradle
@@ -195,14 +196,14 @@ public abstract class AbstractCompilationLocal {
         
         // Set Java Home, go to project directory, execute the unpackaged Gradle binary.
         // Pass to the Gradle binary: 
-        // 		* User home directory
-        // 		* Option to ensure output is logger friendly
-        //		* The task(s) to be executed.
+        //         * User home directory
+        //         * Option to ensure output is logger friendly
+        //        * The task(s) to be executed.
         String buildCommand = javaHomeCommand + "; "
                 + "cd " + projectDirectory.toString() + "; "
                 + gradleBin.toString() + "/gradle "
-                + "-Dgradle.user.home=" + testRunDirectory + "/.gradle"
-                + "--console "
+                + "-Dgradle.user.home=" + testRunDirectory + "/.gradle "
+                + "--console plain "
                 + "build";
         
         logger.info("Issuing Command: " + buildCommand);
@@ -210,17 +211,18 @@ public abstract class AbstractCompilationLocal {
         String managerBuildResults = getLinuxImage().getCommandShell().issueCommand(buildCommand);
         
         assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
+        logger.info("OUTPUT FOR TEST: " + managerBuildResults);
     }
     
     /*
      * Sets the project directory to run the gradle build against
      * 
      */
-    abstract protected void setProjectDirectory() throws ResourceUnavailableException, LinuxManagerException, IpNetworkManagerException, IOException;
+    abstract protected void setProjectDirectory() throws ResourceUnavailableException, LinuxManagerException, IpNetworkManagerException, IOException, TestBundleResourceException;
 
     
     /*
-     * @return  ecosystem	The ecosystem instance associated with the test.
+     * @return  ecosystem   The ecosystem instance associated with the test.
      * 
      */
     abstract protected IGenericEcosystem getEcosystem();
