@@ -31,6 +31,7 @@ public abstract class AbstractCompilationLocalOffline extends AbstractCompilatio
     }
 
 	private Path setupExampleProject() throws IOException, TestBundleResourceException {
+		logger.trace("Setting up example project");
 		Path projectDir = testRunDirectory.resolve("helloworld");
 		
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -44,22 +45,25 @@ public abstract class AbstractCompilationLocalOffline extends AbstractCompilatio
 		Path javaSrcDir = projectDir.resolve("src/main/java/dev/galasa/compilation/test/helloworld");
 		Path javaSrcFile = javaSrcDir.resolve("HelloWorld.java");
 		
+		logger.trace("Creating files and directories: ");
+		logger.trace("Creating directory: " + projectDir.toString());
 		Files.createDirectories(projectDir);
+		logger.trace("Creating file: " + settingsGradle.toString());
 		Files.createFile(settingsGradle);
+		logger.trace("Creating file: " + settbuildGradleingsGradle.toString());
 		Files.createFile(buildGradle);
+		logger.trace("Creating directory: " + javaSrcDir.toString());
 		Files.createDirectories(javaSrcDir);
+		logger.trace("Creating file: " + javaSrcFile.toString());
 		Files.createFile(javaSrcFile);
-
+		
+		logger.trace("Writing data from example files to project directory");
 		Files.write(settingsGradle,
 				resources.retrieveSkeletonFileAsString("offlinebuild/exampleSettings.gradle", parameters).getBytes());
 		Files.write(buildGradle, 
 				resources.retrieveSkeletonFileAsString("offlinebuild/exampleBuild.gradle", parameters).getBytes());
 		Files.write(javaSrcFile, 
 				resources.retrieveSkeletonFileAsString("offlinebuild/HelloWorld.java", parameters).getBytes());
-		
-		logger.info("Settings File: " + new String(Files.readAllBytes(settingsGradle), Charset.defaultCharset()));
-		logger.info("Build File: " + new String(Files.readAllBytes(buildGradle), Charset.defaultCharset()));
-		logger.info("Java Src File: " + new String(Files.readAllBytes(javaSrcFile), Charset.defaultCharset()));
 		
 		return projectDir;
 	}
@@ -68,9 +72,11 @@ public abstract class AbstractCompilationLocalOffline extends AbstractCompilatio
 		// Iterate dependencies
 		String[] managers = getManagers();
         StringBuilder sb = new StringBuilder();
-        
+
+        logger.trace("Adding dependencies to build.gradle:");
         for (int i = 0; i < managers.length; i++) {
         	if (managers[i].equals("dev.galasa.selenium.manager")) {
+				
         		sb.append("    implementation('dev.galasa:dev.galasa.selenium.manager:0.+'){\n" + 
         	            "        exclude group: 'com.squareup.okio', module: 'okio'\n" + 
         	            "        exclude group: 'com.squareup.okhttp3', module: 'okhttp'\n" + 
@@ -81,9 +87,9 @@ public abstract class AbstractCompilationLocalOffline extends AbstractCompilatio
         	} else {
         		sb.append("    implementation 'dev.galasa:" + managers[i] + ":0.+'\n");
         	}
-            
+            logger.trace("Dependency: " + managers[i]);
         }
-        
+        logger.trace("Adding constraints to build.gradle:");
         sb.append(
             "    constraints {\n" + 
             "        implementation('commons-codec:commons-codec:1.15'){\n" + 
