@@ -26,7 +26,7 @@ import dev.galasa.linux.OperatingSystem;
 @TestAreas({"compilation","localecosystem","java08","ubuntu","mvp"})
 public class CompilationLocalOfflineJava08UbuntuMVP extends AbstractCompilationLocalOffline {
 
-    @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Full)
+    @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Mvp)
     public ILocalEcosystem ecosystem;
     
     @LinuxImage(operatingSystem = OperatingSystem.ubuntu, capabilities = "mvp")
