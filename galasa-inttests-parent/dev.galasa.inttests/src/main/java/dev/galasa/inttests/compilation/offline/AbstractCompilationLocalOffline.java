@@ -50,7 +50,7 @@ public abstract class AbstractCompilationLocalOffline extends AbstractCompilatio
 		Files.createDirectories(projectDir);
 		logger.trace("Creating file: " + settingsGradle.toString());
 		Files.createFile(settingsGradle);
-		logger.trace("Creating file: " + settbuildGradleingsGradle.toString());
+		logger.trace("Creating file: " + settingsGradle.toString());
 		Files.createFile(buildGradle);
 		logger.trace("Creating directory: " + javaSrcDir.toString());
 		Files.createDirectories(javaSrcDir);
