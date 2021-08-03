@@ -10,10 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +23,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import dev.galasa.BeforeClass;
+import dev.galasa.ResultArchiveStoreContentType;
+import dev.galasa.SetContentType;
 import dev.galasa.Test;
 import dev.galasa.artifact.TestBundleResourceException;
 import dev.galasa.core.manager.Logger;
@@ -48,6 +50,7 @@ public abstract class AbstractCompilationLocal {
     @HttpClient
     public IHttpClient      client;
     
+    private Path            storedArtifactsRoot;
     protected Path          testRunDirectory;
     protected Path          projectDirectory;
     private Path            gradleBin;
@@ -68,6 +71,7 @@ public abstract class AbstractCompilationLocal {
         javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
         
         testRunDirectory = getLinuxImage().getHome().resolve(runName);
+        storedArtifactsRoot = getEcosystem().getFramework().getResultArchiveStore().getStoredArtifactsRoot();
         
         setProjectDirectory();
         
@@ -212,6 +216,23 @@ public abstract class AbstractCompilationLocal {
         
         assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
         logger.info("OUTPUT FOR TEST: " + managerBuildResults);
+    }
+    
+    /**
+     * Stores a file in the RAS. Function will retrieve the content from the file and store it the ras at a location realtive to the run directory.
+     * @param     file        Path to the file to be stored.
+     *      
+     */
+    protected void storeOutput(String prefix, Path file) throws IOException {
+
+        assertThat(file.toString()).contains(testRunDirectory.toString());
+        
+        // Match only the portion of the path *after* the test directory
+        Path requestPath = storedArtifactsRoot.resolve( prefix + "/" +
+                file.toString().substring(testRunDirectory.toString().length()+1));
+        
+        Files.write(requestPath, Files.readAllBytes(file), new SetContentType(ResultArchiveStoreContentType.TEXT),
+                StandardOpenOption.CREATE);
     }
     
     /*
