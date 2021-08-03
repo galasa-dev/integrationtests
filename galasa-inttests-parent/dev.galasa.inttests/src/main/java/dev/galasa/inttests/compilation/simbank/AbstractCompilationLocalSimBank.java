@@ -126,7 +126,6 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
     private void createParentSettings(Path simplatformParent) throws IOException {
         logger.trace("Creating settings.gradle");
         Path parentSettingsFile = simplatformParent.resolve("settings.gradle");
-//        Files.createFile(parentSettingsFile);
         
         StringBuilder settingsSB = new StringBuilder();
         settingsSB.append("include '");
