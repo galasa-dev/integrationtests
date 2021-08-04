@@ -29,6 +29,7 @@ import dev.galasa.Test;
 import dev.galasa.artifact.TestBundleResourceException;
 import dev.galasa.core.manager.Logger;
 import dev.galasa.core.manager.RunName;
+import dev.galasa.core.manager.StoredArtifactRoot;
 import dev.galasa.core.manager.TestProperty;
 import dev.galasa.framework.spi.ResourceUnavailableException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -50,7 +51,9 @@ public abstract class AbstractCompilationLocal {
     @HttpClient
     public IHttpClient      client;
     
-    private Path            storedArtifactsRoot;
+    @StoredArtifactRoot
+    public Path             storedArtifactRoot;
+    
     protected Path          testRunDirectory;
     protected Path          projectDirectory;
     private Path            gradleBin;
@@ -71,7 +74,6 @@ public abstract class AbstractCompilationLocal {
         javaHomeCommand = "export JAVA_HOME=" + getJavaInstallation().getJavaHome();
         
         testRunDirectory = getLinuxImage().getHome().resolve(runName);
-        storedArtifactsRoot = getEcosystem().getFramework().getResultArchiveStore().getStoredArtifactsRoot();
         
         setProjectDirectory();
         
@@ -228,7 +230,7 @@ public abstract class AbstractCompilationLocal {
         assertThat(file.toString()).contains(testRunDirectory.toString());
         
         // Match only the portion of the path *after* the test directory
-        Path requestPath = storedArtifactsRoot.resolve( prefix + "/" +
+        Path requestPath = storedArtifactRoot.resolve( prefix + "/" +
                 file.toString().substring(testRunDirectory.toString().length()+1));
         
         Files.write(requestPath, Files.readAllBytes(file), new SetContentType(ResultArchiveStoreContentType.TEXT),
