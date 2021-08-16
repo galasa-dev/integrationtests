@@ -29,7 +29,7 @@ public class CompilationLocalOfflineJava11UbuntuMVP extends AbstractCompilationL
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Mvp)
     public ILocalEcosystem ecosystem;
     
-    @LinuxImage(operatingSystem = OperatingSystem.ubuntu, capabilities = "mvp")
+    @LinuxImage(operatingSystem = OperatingSystem.ubuntu, capabilities = "isolated")
     public ILinuxImage linuxImage;
     
     @JavaUbuntuInstallation(javaVersion = JavaVersion.v11)
