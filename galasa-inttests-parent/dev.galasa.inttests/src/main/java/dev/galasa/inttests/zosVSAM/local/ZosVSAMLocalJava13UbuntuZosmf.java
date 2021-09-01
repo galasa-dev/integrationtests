@@ -5,7 +5,7 @@ import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 import dev.galasa.galasaecosystem.LocalEcosystem;
-import dev.galasa.inttests.zosVSAM.AbstractZosVSAMLocal;
+import dev.galasa.inttests.zosVSAM.AbstractZosVSAMLocalZosmf;
 import dev.galasa.java.JavaVersion;
 import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
 import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
@@ -16,8 +16,8 @@ import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
 @Test
-@TestAreas({"zosManager","localecosystem","java11","ubuntu"})
-public class ZosVSAMLocalJava11Ubuntu extends AbstractZosVSAMLocal {
+@TestAreas({"zosManager","localecosystem","java13","ubuntu"})
+public class ZosVSAMLocalJava13UbuntuZosmf extends AbstractZosVSAMLocalZosmf {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")
     public ILocalEcosystem ecosystem;
@@ -25,7 +25,7 @@ public class ZosVSAMLocalJava11Ubuntu extends AbstractZosVSAMLocal {
     @LinuxImage(operatingSystem = OperatingSystem.ubuntu)
     public ILinuxImage linuxImage;
     
-    @JavaUbuntuInstallation(javaVersion = JavaVersion.v11)
+    @JavaUbuntuInstallation(javaVersion = JavaVersion.v13)
     public IJavaUbuntuInstallation java;
 
     @ZosImage
