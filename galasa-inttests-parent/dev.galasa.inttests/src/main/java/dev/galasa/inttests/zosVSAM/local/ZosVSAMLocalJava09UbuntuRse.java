@@ -1,3 +1,6 @@
+/*
+ * Copyright contributors to the Galasa project 
+ */
 package dev.galasa.inttests.zosVSAM.local;
 
 import dev.galasa.Test;
