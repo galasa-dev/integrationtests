@@ -1,8 +1,6 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2021.
- */
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.compilation.simbank;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +22,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
     
     @Override
     protected void setProjectDirectory() throws ResourceUnavailableException, LinuxManagerException, IpNetworkManagerException, IOException {
-    	projectDirectory = setupSimPlatform();
+        projectDirectory = setupSimPlatform();
     }
     
     /*
@@ -50,9 +48,33 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Path simplatformParent = testRunDirectory.resolve("simplatform");
         Files.createDirectories(simplatformParent);
         structureSimplatform(remoteUnpacked, simplatformParent);
+        createParentSettings(simplatformParent);
+        
+        outputFiles("simplatform-example", simplatformParent, true);
+        
         refactorSimplatform(simplatformParent);
         
+        outputFiles("simplatform-refactored", simplatformParent, false);
+        
         return simplatformParent;
+    }
+
+    private void outputFiles(String prefix, Path simplatformParent, boolean example) throws IOException {
+        
+        String ex = "";
+        
+        if (example) {
+            ex = "-example";
+        } else {
+            storeOutput(prefix, simplatformParent.resolve("settings.gradle"));
+        }
+        
+        storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/settings" + ex + ".gradle"));
+        storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/build" + ex + ".gradle"));
+        storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/bnd" + ex + ".bnd"));
+        storeOutput(prefix, simplatformParent.resolve(testProjectName + "/settings" + ex + ".gradle"));
+        storeOutput(prefix, simplatformParent.resolve(testProjectName + "/build" + ex + ".gradle"));
+        storeOutput(prefix, simplatformParent.resolve(testProjectName + "/bnd" + ex + ".bnd"));
     }
     
     /*
@@ -78,21 +100,6 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         // Create new (temp) directory
         logger.trace("Creating project parent directory (for manager and tests)");
         
-        // Create parent settings file
-        
-        logger.trace("Creating settings.gradle");
-        Path parentSettingsFile = simplatformParent.resolve("settings.gradle");
-//        Files.createFile(parentSettingsFile);
-        
-        StringBuilder settingsSB = new StringBuilder();
-        settingsSB.append("include '");
-        settingsSB.append(managerProjectName);
-        settingsSB.append("'\n");
-        settingsSB.append("include '");
-        settingsSB.append(testProjectName);
-        settingsSB.append("'\n");
-        Files.write(parentSettingsFile, settingsSB.toString().getBytes());
-        
         // Get Manager Files
         logger.trace("Copying managers source into parent directory");
         moveFilesOnRemote(
@@ -105,20 +112,39 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         moveFilesOnRemote(
                 unpackedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName), 
                 simplatformParent.resolve(testProjectName)
-            );
+            );        
+    }
+
+    /*
+     * Creates a parent settings file within the specified directory
+     * 
+     * @param    simplatformParent    Directory target for new settings file
+     * 
+     */
+    private void createParentSettings(Path simplatformParent) throws IOException {
+        logger.trace("Creating settings.gradle");
+        Path parentSettingsFile = simplatformParent.resolve("settings.gradle");
         
+        StringBuilder settingsSB = new StringBuilder();
+        settingsSB.append("include '");
+        settingsSB.append(managerProjectName);
+        settingsSB.append("'\n");
+        settingsSB.append("include '");
+        settingsSB.append(testProjectName);
+        settingsSB.append("'\n");
+        Files.write(parentSettingsFile, settingsSB.toString().getBytes());
     }
     
     /*
      * Moves file (source) to target.
      * 
-     * @param	source	Path: The file to be moved
-     * @param	target	Path: The location to be moved to
+     * @param    source    Path: The file to be moved
+     * @param    target    Path: The location to be moved to
      */
     private void moveFilesOnRemote(Path source, Path target) throws IpNetworkManagerException, LinuxManagerException {
         String command = "mv " + source.toString() + " " + target.toString() + "; echo RC=$?";
         logger.info("issuing command: " + command);
-    	String rc = getLinuxImage().getCommandShell().issueCommand(command);
+        String rc = getLinuxImage().getCommandShell().issueCommand(command);
         assertThat(rc).isEqualToIgnoringWhitespace("RC=0");
     }
     
