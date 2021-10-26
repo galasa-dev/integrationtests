@@ -38,9 +38,8 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         
         logger.info("Uploading simplatform repository archive to image");
         Path remoteArchive = testRunDirectory.resolve("simplatformArchive");
-        Files.createDirectories(remoteArchive);
+        Files.createDirectories(testRunDirectory);
         Path remoteUnpacked = testRunDirectory.resolve("simplatformUnpacked");
-        Files.createDirectories(remoteUnpacked);
         Files.copy(localArchive, remoteArchive);
         
         logger.info("Unzipping simplatform repository archive");
