@@ -18,7 +18,7 @@ import dev.galasa.linux.OperatingSystem;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
-@Test
+// @Test
 @TestAreas({"zosManager","localecosystem","java15","ubuntu"})
 public class ZosBatchLocalJava15UbuntuRse extends AbstractZosBatchLocalRSE {
 
