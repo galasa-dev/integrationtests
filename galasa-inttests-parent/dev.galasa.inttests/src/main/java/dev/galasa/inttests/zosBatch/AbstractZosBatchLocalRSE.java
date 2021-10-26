@@ -12,7 +12,7 @@ import dev.galasa.galasaecosystem.IGenericEcosystem;
 
 public abstract class AbstractZosBatchLocalRSE {
     
-    // @Test
+    @Test
     public void testZosBatchIvtTestRSE() throws Exception {
     	
     	//Use RSE batch
