@@ -14,7 +14,7 @@ import dev.galasa.galasaecosystem.IGenericEcosystem;
 public abstract class AbstractCECILocal {
 
     @Test
-    public void testCECIIvtTest(){
+    public void testCECIIvtTest() throws Exception {
 
         String runName = getEcosystem().submitRun(null, 
                 null, 
