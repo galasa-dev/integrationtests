@@ -2,7 +2,7 @@
  * Copyright contributors to the Galasa project
  */
 
-package dev.galasa.inttests.ceci.local.isolated;
+package dev.galasa.inttests.ceci.local.mvp;
 
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
@@ -20,7 +20,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"ceciManager","localecosystem","java11","ubuntu","mvp"})
-public class CECILocalJava11Isolated extends AbstractCECILocal {
+public class CECILocalJava11UbuntuMvp extends AbstractCECILocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Mvp)
     public ILocalEcosystem ecosystem;

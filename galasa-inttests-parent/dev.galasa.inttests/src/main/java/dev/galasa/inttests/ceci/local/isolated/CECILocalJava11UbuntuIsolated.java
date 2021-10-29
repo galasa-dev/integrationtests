@@ -20,7 +20,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"ceciManager","localecosystem","java11","ubuntu","isolated"})
-public class CECILocalJava11Isolated extends AbstractCECILocal {
+public class CECILocalJava11UbuntuIsolated extends AbstractCECILocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Full)
     public ILocalEcosystem ecosystem;
