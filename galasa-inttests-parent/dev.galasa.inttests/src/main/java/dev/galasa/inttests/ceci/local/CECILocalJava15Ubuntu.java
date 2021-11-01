@@ -16,12 +16,14 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
+import dev.galasa.zos.IZosImage;
+import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"ceciManager","localecosystem","java15","ubuntu"})
 public class CECILocalJava15Ubuntu extends AbstractCECILocal {
 
-    @LocalEcosystem(linuxImageTag = "PRIMARY")
+    @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")
     public ILocalEcosystem ecosystem;
     
     @LinuxImage(operatingSystem = OperatingSystem.ubuntu)
@@ -29,6 +31,9 @@ public class CECILocalJava15Ubuntu extends AbstractCECILocal {
     
     @JavaUbuntuInstallation(javaVersion = JavaVersion.v15)
     public IJavaUbuntuInstallation java;
+
+    @ZosImage
+    public IZosImage zosImage;
 
     @Override
     protected IGenericEcosystem getEcosystem() {

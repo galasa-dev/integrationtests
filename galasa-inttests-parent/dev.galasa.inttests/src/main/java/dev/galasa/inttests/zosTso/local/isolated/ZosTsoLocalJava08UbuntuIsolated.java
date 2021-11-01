@@ -17,7 +17,7 @@ import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
 @Test
-@TestAreas({"zosManager","localecosystem","java08","ubuntu","mvp"})
+@TestAreas({"zosManager","localecosystem","java08","ubuntu","isolated"})
 public class ZosTsoLocalJava08UbuntuIsolated extends AbstractZosTsoLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Full, addDefaultZosImage = "PRIMARY")
