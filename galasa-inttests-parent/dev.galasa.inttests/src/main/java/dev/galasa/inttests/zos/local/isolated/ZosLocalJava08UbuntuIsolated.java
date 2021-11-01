@@ -1,4 +1,8 @@
-package dev.galasa.inttests.zos.local.isolated;
+/*
+ * Copyright contributors to the Galasa project
+ */
+
+ package dev.galasa.inttests.zos.local.isolated;
 
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
