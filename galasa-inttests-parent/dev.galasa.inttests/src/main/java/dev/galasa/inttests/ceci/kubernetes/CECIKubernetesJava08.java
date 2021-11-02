@@ -46,7 +46,7 @@ public class CECIKubernetesJava08 {
 
         submitTest("dev.galasa.cicsts.ceci.manager.ivt.CECIManagerIVT");
         
-        logger.info("ArtifactManagerIVT test passed");
+        logger.info("CECIManagerIVT test passed");
 
     }
     
