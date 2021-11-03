@@ -20,7 +20,7 @@ import dev.galasa.linux.OperatingSystem;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
-@Test
+// @Test
 @TestAreas({"ceciManager","localecosystem","java11","ubuntu","mvp"})
 public class CECILocalJava11UbuntuMvp extends AbstractCECILocal {
 
