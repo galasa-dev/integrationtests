@@ -5,6 +5,7 @@
 package dev.galasa.inttests.ceci.kubernetes;
 
 import java.util.UUID;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 
@@ -56,6 +57,12 @@ public class CECIKubernetesJava08 {
         
         String groupName = UUID.randomUUID().toString();
 
+        Properties overrides = new Properties();
+        overrides.setProperty("cicsts.dse.tag.PRIMARY.applid", "IYK2ZNB5");
+        overrides.setProperty("cicsts.provision.type", "DSE");
+        overrides.setProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
+        overrides.setProperty("cicsts.default.logon.gm.text", "******\\(R)");
+
         ecosystem.submitRun(null,
                 runName,
                 groupName,
@@ -64,7 +71,7 @@ public class CECIKubernetesJava08 {
                 null,
                 null,
                 null,
-                null);
+                overrides);
         
         JsonObject finalResponse = ecosystem.waitForGroupNames(groupName, 180);
 
