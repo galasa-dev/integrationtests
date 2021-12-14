@@ -25,7 +25,7 @@ import dev.galasa.galasaecosystem.IKubernetesEcosystem;
 import dev.galasa.inttests.TestException;
 import dev.galasa.galasaecosystem.GalasaEcosystemManagerException;
 
-@Test
+// @Test
 @Summary("CECI Manager IVT tests in a provisioned Galasa Ecosystem")
 @TestAreas({"ceciManager","kubernetes","java08"})
 public class CECIKubernetesJava08 {
