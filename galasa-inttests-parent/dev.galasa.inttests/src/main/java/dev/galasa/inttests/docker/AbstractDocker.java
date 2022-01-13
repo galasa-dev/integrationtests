@@ -16,7 +16,7 @@ public abstract class AbstractDocker {
 	}
 	
 	protected boolean isDockerRunning(ICommandShell shell) throws Exception {
-		String res = shell.issueCommand("systemctl show --property ActiveState docker");
+		String res = shell.issueCommand("sudo systemctl show --property ActiveState docker");
 		if(res.contains("active")){
 			return true;
 		} else {

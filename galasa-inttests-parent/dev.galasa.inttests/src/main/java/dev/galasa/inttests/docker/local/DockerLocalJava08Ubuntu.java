@@ -43,13 +43,11 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.max.slots", "1");
 	}
 	
-	@BeforeClass
 	public void getShell() throws Exception {
 		shell = linuxImage.getCommandShell();
 		testLogger.info("Terminal access to test host obtained");
 	}
 	
-	@BeforeClass
 	public void ensureRequrementsAreInstalled() throws Exception {
 		
 		String res = "";
@@ -58,7 +56,7 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 		if(isDockerInstalled(shell)) {
 			if(!isDockerRunning(shell)) {
 				testLogger.info("Docker is not currently running. Starting Docker...");
-				res = shell.issueCommand("systemctl start docker");
+				res = shell.issueCommand("sudo systemctl start docker");
 				testLogger.info("Docker started.");
 			}
 		} else {
