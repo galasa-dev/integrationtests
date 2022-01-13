@@ -1,7 +1,5 @@
 package dev.galasa.inttests.docker.local;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.commons.logging.Log;
 
 import dev.galasa.BeforeClass;
@@ -24,8 +22,8 @@ import dev.galasa.linux.OperatingSystem;
 @TestAreas({"dockermanager", "localecosystem", "java08", "ubuntu"})
 public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 	
-//	@LocalEcosystem(linuxImageTag = "PRIMARY")
-//	public ILocalEcosystem ecosystem;
+	@LocalEcosystem(linuxImageTag = "PRIMARY")
+	public ILocalEcosystem ecosystem;
 	
 	@LinuxImage(operatingSystem = OperatingSystem.ubuntu)
     public ILinuxImage linuxImage;
@@ -38,6 +36,11 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 	private ICommandShell shell;
 	
 	@BeforeClass
+	public void setProps() throws Exception {
+		
+	}
+	
+	@BeforeClass
 	public void getShell() throws Exception {
 		shell = linuxImage.getCommandShell();
 		testLogger.info("Terminal access to test host obtained");
@@ -48,29 +51,23 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 		
 		String res = "";
 		
-		try {
-			testLogger.info("Checking Docker is installed.");
-			if(isDockerInstalled(shell)) {
-				if(!isDockerRunning(shell)) {
-					testLogger.info("Docker is not currently running. Starting Docker...");
-					res = shell.issueCommand("systemctl start docker");
-					testLogger.info("Docker started.");
-				}
-			} else {
-				res = this.updatePackageManager(shell);
-				testLogger.info("Installing Docker...");
-				res = shell.issueCommand("sudo apt -y install docker-ce docker-ce-cli containerd.io");
+		testLogger.info("Checking Docker is installed.");
+		if(isDockerInstalled(shell)) {
+			if(!isDockerRunning(shell)) {
+				testLogger.info("Docker is not currently running. Starting Docker...");
+				res = shell.issueCommand("systemctl start docker");
+				testLogger.info("Docker started.");
 			}
-			
-			testLogger.info("Checking Maven is installed");
-			if(!isMavenInstalled(shell)) {
-				res = shell.issueCommand("sudo apt -y install maven");
-			}
-		} catch (Exception e) {
-			testLogger.error("Command failed! The command returned message: " + res);
-			throw e;
+		} else {
+			res = this.updatePackageManager(shell);
+			testLogger.info("Installing Docker...");
+			res = shell.issueCommand("sudo apt -y install docker-ce docker-ce-cli containerd.io");
 		}
 		
+		testLogger.info("Checking Maven is installed");
+		if(!isMavenInstalled(shell)) {
+			res = shell.issueCommand("sudo apt -y install maven");
+		}
 	}
 	
 	@Override
@@ -80,8 +77,9 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 		return res;
 	}
 	
-//	@Override
-//	protected IGenericEcosystem getEcosystem() {
-//		return null;
-//	}
+	@Override
+	protected IGenericEcosystem getEcosystem() throws Exception{
+		ecosystem.setCpsProperty(null, null);
+		return ecosystem;
+	}
 }

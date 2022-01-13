@@ -25,8 +25,8 @@ public abstract class AbstractDocker {
 	}
 	
 	protected boolean isMavenInstalled(ICommandShell shell) throws Exception {
-		String res = shell.issueCommand("mvn -v");
-		if(res.contains("no such file or directory")) {
+		String res = shell.issueCommand("mvn -v");	
+		if(res.contains("no such file or directory") || res.contains("not found")) {
 			return false;
 		} else {
 			return true;
