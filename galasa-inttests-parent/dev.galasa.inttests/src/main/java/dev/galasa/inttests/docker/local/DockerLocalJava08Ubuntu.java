@@ -37,7 +37,10 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 	
 	@BeforeClass
 	public void setProps() throws Exception {
-		
+		ecosystem.setCpsProperty("docker.default.engines", "DKRENGINE01");
+		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.hostname", "192.168.1.200");
+		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.port", "3275");
+		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.max.slots", "1");
 	}
 	
 	@BeforeClass
