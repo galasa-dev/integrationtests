@@ -1,3 +1,8 @@
+/*
+ * Licensed Materials - Property of IBM
+ * 
+ * (c) Copyright IBM Corp. 2022.
+ */
 package dev.galasa.inttests.docker;
 
 import static org.assertj.core.api.Assertions.assertThat;

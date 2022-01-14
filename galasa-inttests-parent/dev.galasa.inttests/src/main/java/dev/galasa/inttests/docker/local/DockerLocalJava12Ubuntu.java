@@ -1,3 +1,8 @@
+/*
+ * Licensed Materials - Property of IBM
+ * 
+ * (c) Copyright IBM Corp. 2022.
+ */
 package dev.galasa.inttests.docker.local;
 
 import dev.galasa.BeforeClass;
@@ -25,7 +30,7 @@ public class DockerLocalJava12Ubuntu extends AbstractDockerLocal {
 	@LinuxImage(operatingSystem = OperatingSystem.ubuntu)
     public ILinuxImage linuxImage;
 	
-	@JavaUbuntuInstallation(javaVersion = JavaVersion.v8)
+	@JavaUbuntuInstallation(javaVersion = JavaVersion.v12)
 	public IJavaUbuntuInstallation java;
 	
 	@BeforeClass
