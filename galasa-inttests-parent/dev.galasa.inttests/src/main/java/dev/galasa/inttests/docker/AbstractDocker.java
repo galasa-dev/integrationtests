@@ -58,7 +58,6 @@ public abstract class AbstractDocker {
 			return false;
 		} else {
 			return true;
-	
 		}
 	}
 	
