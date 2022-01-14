@@ -1,11 +1,8 @@
 package dev.galasa.inttests.docker.local;
 
-import org.apache.commons.logging.Log;
-
 import dev.galasa.BeforeClass;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
-import dev.galasa.core.manager.Logger;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 import dev.galasa.galasaecosystem.LocalEcosystem;
