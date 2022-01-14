@@ -19,7 +19,7 @@ import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
 
 @Test
-@TestAreas({"dockermanager", "localecosystem", "java08", "ubuntu"})
+@TestAreas({"dockermanager", "localecosystem", "java13", "ubuntu"})
 public class DockerLocalJava13Ubuntu extends AbstractDockerLocal {
 	
 	@LocalEcosystem(linuxImageTag = "PRIMARY")
