@@ -31,56 +31,36 @@ public class DockerLocalJava08Ubuntu extends AbstractDockerLocal {
 	@JavaUbuntuInstallation(javaTag = "PRIMARY", javaVersion = JavaVersion.v8)
 	public IJavaUbuntuInstallation java;
 	
-	@Logger
-	public Log testLogger;
-	private ICommandShell shell;
-	
 	@BeforeClass
 	public void setProps() throws Exception {
 		ecosystem.setCpsProperty("docker.default.engines", "DKRENGINE01");
 		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.hostname", "192.168.1.200");
 		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.port", "3275");
-		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.max.slots", "1");
+		ecosystem.setCpsProperty("docker.engine.DKRENGINE01.max.slots", "3");
 	}
 	
 	public void getShell() throws Exception {
-		shell = linuxImage.getCommandShell();
-		testLogger.info("Terminal access to test host obtained");
+		ICommandShell shell = linuxImage.getCommandShell();
+		setShell(shell);
 	}
 	
 	public void ensureRequrementsAreInstalled() throws Exception {
-		
-		String res = "";
-		
-		testLogger.info("Checking Docker is installed.");
-		if(isDockerInstalled(shell)) {
-			if(!isDockerRunning(shell)) {
-				testLogger.info("Docker is not currently running. Starting Docker...");
-				res = shell.issueCommand("sudo systemctl start docker");
-				testLogger.info("Docker started.");
+		if(isDockerInstalled()) {
+			if(!isDockerRunning("sudo systemctl show --property ActiveState docker")) {
+				startDocker("sudo systemctl start docker");
 			}
 		} else {
-			res = this.updatePackageManager(shell);
-			testLogger.info("Installing Docker...");
-			res = shell.issueCommand("sudo apt -y install docker-ce docker-ce-cli containerd.io");
+			updatePackageManager("sudo apt -y update");
+			installDocker("sudo apt -y install docker-ce docker-ce-cli containerd.io");
 		}
 		
-		testLogger.info("Checking Maven is installed");
-		if(!isMavenInstalled(shell)) {
-			res = shell.issueCommand("sudo apt -y install maven");
+		if(!isMavenInstalled()) {
+			installMaven("sudo apt -y install maven");
 		}
-	}
-	
-	@Override
-	protected String updatePackageManager(ICommandShell shell) throws Exception {
-		testLogger.info("Updating package manager...");
-		String res = shell.issueCommand("sudo apt -y update");
-		return res;
 	}
 	
 	@Override
 	protected IGenericEcosystem getEcosystem() throws Exception{
-		ecosystem.setCpsProperty(null, null);
 		return ecosystem;
 	}
 }
