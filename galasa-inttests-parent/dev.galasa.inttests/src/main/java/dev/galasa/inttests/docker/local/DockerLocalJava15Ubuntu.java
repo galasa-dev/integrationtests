@@ -26,7 +26,7 @@ public class DockerLocalJava15Ubuntu extends AbstractDockerLocal {
 	public ILocalEcosystem ecosystem;
 	
 	@LinuxImage(operatingSystem = OperatingSystem.ubuntu)
-    public ILinuxImage linuxImage;
+	public ILinuxImage linuxImage;
 	
 	@JavaUbuntuInstallation(javaVersion = JavaVersion.v15)
 	public IJavaUbuntuInstallation java;

@@ -33,5 +33,4 @@ public abstract class AbstractDockerLocal extends AbstractDocker {
 	}
 	
 	abstract protected IGenericEcosystem getEcosystem() throws Exception;
-
 }
