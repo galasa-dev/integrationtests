@@ -14,12 +14,12 @@ public abstract class AbstractDocker {
 	private Log logger;
 	private ICommandShell shell;
 	
-	protected void updatePackageManager(String command) throws Exception {
-		shell.issueCommand(command);
-	}
-	
 	protected void setShell(ICommandShell shell) throws Exception {
 		this.shell = shell;
+	}
+	
+	protected void updatePackageManager(String command) throws Exception {
+		shell.issueCommand(command);
 	}
 	
 	protected boolean isDockerInstalled() throws Exception {
