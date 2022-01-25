@@ -20,7 +20,7 @@ import dev.galasa.linux.OperatingSystem;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
-// @Test
+@Test
 @TestAreas({"cemtManager","localecosystem","java08","ubuntu","isolated"})
 public class CEMTLocalJava08UbuntuIsolated extends AbstractCEMTLocal {
 

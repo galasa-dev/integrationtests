@@ -21,8 +21,8 @@ import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
 @Test
-@TestAreas({"cedaManager","localecosystem","java08","ubuntu","isolated"})
-public class CEDALocalJava08UbuntuIsolated extends AbstractCEDALocal {
+@TestAreas({"cedaManager","localecosystem","java11","ubuntu","isolated"})
+public class CEDALocalJava11UbuntuIsolated extends AbstractCEDALocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY", isolationInstallation = IsolationInstallation.Full)
     public ILocalEcosystem ecosystem;
@@ -30,7 +30,7 @@ public class CEDALocalJava08UbuntuIsolated extends AbstractCEDALocal {
     @LinuxImage(operatingSystem = OperatingSystem.ubuntu, capabilities = "isolated")
     public ILinuxImage linuxImage;
     
-    @JavaUbuntuInstallation(javaVersion = JavaVersion.v8)
+    @JavaUbuntuInstallation(javaVersion = JavaVersion.v11)
     public IJavaUbuntuInstallation java;
 
     @ZosImage
