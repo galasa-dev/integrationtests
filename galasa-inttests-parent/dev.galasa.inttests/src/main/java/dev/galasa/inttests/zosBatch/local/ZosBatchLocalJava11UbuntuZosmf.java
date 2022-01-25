@@ -3,6 +3,7 @@
  */
 package dev.galasa.inttests.zosBatch.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -20,6 +21,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"zosManager","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class ZosBatchLocalJava11UbuntuZosmf extends AbstractZosBatchLocalZosmf {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")

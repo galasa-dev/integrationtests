@@ -1,8 +1,6 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2020,2021.
- */
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.core.kubernetes;
 
 import java.util.UUID;
@@ -14,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import dev.galasa.Summary;
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.core.manager.Logger;
@@ -28,6 +27,7 @@ import dev.galasa.kubernetes.KubernetesNamespace;
 @Test
 @Summary("Run Core IVT tests in a provisioned Galasa Ecosystem")
 @TestAreas({"coreManager","kubernetes","java08"})
+@Tags({"pipelinetest"})
 public class CoreKubernetesJava08 {
 
     @Logger

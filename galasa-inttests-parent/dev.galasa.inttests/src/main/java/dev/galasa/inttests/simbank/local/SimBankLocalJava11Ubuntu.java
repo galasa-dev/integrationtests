@@ -1,13 +1,11 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2021.
- */
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.simbank.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
-import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 import dev.galasa.galasaecosystem.LocalEcosystem;
 import dev.galasa.inttests.simbank.AbstractSimBankLocal;
@@ -20,6 +18,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"simplatform","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class SimBankLocalJava11Ubuntu extends AbstractSimBankLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", startSimPlatform = true)
@@ -32,7 +31,7 @@ public class SimBankLocalJava11Ubuntu extends AbstractSimBankLocal {
     public IJavaUbuntuInstallation java;
 
     @Override
-    protected IGenericEcosystem getEcosystem() {
+    protected ILocalEcosystem getEcosystem() {
         return this.ecosystem;
     }
 

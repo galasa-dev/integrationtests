@@ -1,10 +1,9 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2021.
- */
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.http.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -20,6 +19,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"httpManager","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class HttpLocalJava11Ubuntu extends AbstractHttpLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY")

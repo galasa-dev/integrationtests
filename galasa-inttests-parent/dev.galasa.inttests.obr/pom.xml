@@ -46,7 +46,7 @@
 			<plugin>
 				<groupId>dev.galasa</groupId>
 				<artifactId>galasa-maven-plugin</artifactId>
-				<version>0.15.0</version>
+				<version>0.20.0</version>
 				<extensions>true</extensions>
 				<executions>
 					<execution>

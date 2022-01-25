@@ -4,6 +4,7 @@
 
 package dev.galasa.inttests.ceci.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -21,6 +22,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"ceciManager","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class CECILocalJava11Ubuntu extends AbstractCECILocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")

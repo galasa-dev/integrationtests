@@ -1,5 +1,9 @@
+/*
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.artifact.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -15,6 +19,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"artifactManager", "localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class ArtifactLocalJava11Ubuntu extends AbstractArtifactLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY")

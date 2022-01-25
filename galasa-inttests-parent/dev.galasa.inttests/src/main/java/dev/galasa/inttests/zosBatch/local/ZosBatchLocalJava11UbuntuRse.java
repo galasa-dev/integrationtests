@@ -20,6 +20,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"zosManager","localecosystem","java11","ubuntu"})
+//@Tags({"codecoverage"}) - disabled until rse stable
 public class ZosBatchLocalJava11UbuntuRse extends AbstractZosBatchLocalRSE {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")

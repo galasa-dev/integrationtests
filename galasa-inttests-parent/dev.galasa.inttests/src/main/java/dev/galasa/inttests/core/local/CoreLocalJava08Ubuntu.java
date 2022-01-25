@@ -1,5 +1,9 @@
+/*
+* Copyright contributors to the Galasa project 
+*/
 package dev.galasa.inttests.core.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -15,6 +19,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"coreManager","localecosystem","java08","ubuntu"})
+@Tags({"pipelinetest"})
 public class CoreLocalJava08Ubuntu extends AbstractCoreLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY")

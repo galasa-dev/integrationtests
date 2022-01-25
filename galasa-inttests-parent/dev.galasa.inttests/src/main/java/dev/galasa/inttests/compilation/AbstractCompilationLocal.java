@@ -212,7 +212,7 @@ public abstract class AbstractCompilationLocal {
         
         logger.info("Issuing Command: " + buildCommand);
         
-        String managerBuildResults = getLinuxImage().getCommandShell().issueCommand(buildCommand);
+        String managerBuildResults = getLinuxImage().getCommandShell().issueCommand(buildCommand, 300000);
         
         assertThat(managerBuildResults).contains("BUILD SUCCESSFUL");
         logger.info("OUTPUT FOR TEST: " + managerBuildResults);

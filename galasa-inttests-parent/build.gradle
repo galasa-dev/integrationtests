@@ -86,7 +86,7 @@ subprojects {
     dependencies {
         compileOnly 'dev.galasa:dev.galasa:0.15.0'
         compileOnly 'dev.galasa:dev.galasa.framework:0.15.0'
-        compileOnly 'dev.galasa:dev.galasa.core.manager:0.15.0'
+        compileOnly 'dev.galasa:dev.galasa.core.manager:0.20.0'
         compileOnly 'dev.galasa:dev.galasa.zos.manager:0.15.0'
         compileOnly 'dev.galasa:dev.galasa.ipnetwork.manager:0.15.0'
         compileOnly 'dev.galasa:dev.galasa.http.manager:0.15.0'
@@ -96,7 +96,7 @@ subprojects {
         compileOnly 'dev.galasa:dev.galasa.openstack.manager:0.15.0'
         compileOnly 'dev.galasa:dev.galasa.kubernetes.manager:0.16.0'
         compileOnly 'dev.galasa:dev.galasa.docker.manager:0.15.0'
-        compileOnly 'dev.galasa:dev.galasa.galasaecosystem.manager:0.17.0'
+        compileOnly 'dev.galasa:dev.galasa.galasaecosystem.manager:0.20.0'
         compileOnly 'dev.galasa:dev.galasa.java.manager:0.17.0'
         compileOnly 'dev.galasa:dev.galasa.java.ubuntu.manager:0.17.0'
         compileOnly 'dev.galasa:dev.galasa.java.windows.manager:0.17.0'
