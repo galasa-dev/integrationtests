@@ -32,6 +32,12 @@ public abstract class AbstractDocker {
 		getEcosystem().setCpsProperty("docker.engine.DKRTESTENGINE.hostname", dockerHostname);
 		getEcosystem().setCpsProperty("docker.engine.DKRTESTENGINE.port", DOCKER_PORT);
 		getEcosystem().setCpsProperty("docker.engine.DKRTESTENGINE.max.slots", "3");
+
+		// TODO: remove hard coded values
+		getEcosystem().setCpsProperty("docker.default.registries", "HARBOR,PROXY");
+		getEcosystem().setCpsProperty("docker.registry.HARBOR.url", "https://harbor-cicsk8s.hursley.ibm.com");
+		getEcosystem().setCpsProperty("docker.registry.PROXY.url", "https://harbor-cicsk8s.hursley.ibm.com");
+		getEcosystem().setCpsProperty("docker.registry.PROXY.image.prefix", "dockerhub");
 	}
 	
 	@Test
@@ -46,6 +52,7 @@ public abstract class AbstractDocker {
                 null, 
                 null, 
                 null);
+		
 		
 		JsonObject run = getEcosystem().waitForRun(runName);
         
