@@ -3,6 +3,7 @@
  */
 package dev.galasa.inttests.docker.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -18,6 +19,7 @@ import dev.galasa.linux.OperatingSystem;
 
 @Test
 @TestAreas({"dockermanager", "localecosystem", "java11", "ubuntu"})
+@Tags({"codecoverage"})
 public class DockerLocalJava11Ubuntu extends AbstractDockerUbuntuLocal {
 	
 	@LocalEcosystem(linuxImageTag = "PRIMARY")
