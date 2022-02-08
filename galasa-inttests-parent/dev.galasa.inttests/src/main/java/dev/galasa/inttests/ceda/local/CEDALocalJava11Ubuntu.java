@@ -4,6 +4,7 @@
 
 package dev.galasa.inttests.ceda.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -21,6 +22,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"cedaManager","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class CEDALocalJava11Ubuntu extends AbstractCEDALocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")

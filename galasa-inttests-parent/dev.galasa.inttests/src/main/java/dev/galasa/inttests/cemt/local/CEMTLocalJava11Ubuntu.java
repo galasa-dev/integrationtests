@@ -4,6 +4,7 @@
 
 package dev.galasa.inttests.cemt.local;
 
+import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -21,6 +22,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"cemtManager","localecosystem","java11","ubuntu"})
+@Tags({"codecoverage"})
 public class CEMTLocalJava11Ubuntu extends AbstractCEMTLocal {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")
