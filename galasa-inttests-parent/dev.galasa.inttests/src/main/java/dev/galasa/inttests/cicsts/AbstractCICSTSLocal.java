@@ -20,6 +20,12 @@ public abstract class AbstractCICSTSLocal {
 	@ResourceString(tag = "VARNAME", length = 8)
 	public IResourceString resourceString1;
 	
+	@ResourceString(tag = "PROG", length = 8)
+	public IResourceString resourceString2;
+	
+	@ResourceString(tag = "GROUP", length = 8)
+	public IResourceString resourceString3;
+	
 	@BeforeClass
 	public void setUp() throws GalasaEcosystemManagerException {
         getEcosystem().setCpsProperty("cicsts.dse.tag.PRIMARY.applid", "IYK2ZNB5");
@@ -27,7 +33,9 @@ public abstract class AbstractCICSTSLocal {
         getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
         getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
         
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.VARNAME", resourceString1.toString());		
+        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.VARNAME", resourceString1.toString());	
+        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.PROG", resourceString2.toString());	
+        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.GROUP", resourceString3.toString());	
 	}
 
     @Test

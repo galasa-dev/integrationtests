@@ -25,6 +25,9 @@ public abstract class AbstractCEMTLocal {
 	
 	@ResourceString(tag = "GROUP", length = 8)
     public IResourceString resourceString3;
+	
+	@ResourceString(tag = "TDQ", length = 4)
+    public IResourceString resourceString4;
     
     @BeforeClass
     public void setUp() throws GalasaEcosystemManagerException {
@@ -36,6 +39,7 @@ public abstract class AbstractCEMTLocal {
         getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.PROG", resourceString1.toString());
         getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.TRX", resourceString2.toString());
         getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.GROUP", resourceString3.toString());
+        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.TDQ", resourceString4.toString());
     }
 
     @Test
