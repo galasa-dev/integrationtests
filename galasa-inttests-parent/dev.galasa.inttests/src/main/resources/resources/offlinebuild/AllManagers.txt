@@ -21,6 +21,7 @@ dev.galasa.openstack.manager
 dev.galasa.phoenix2.manager
 dev.galasa.selenium.manager
 dev.galasa.textscan.manager
+dev.galasa.vtp.manager
 dev.galasa.windows.manager
 dev.galasa.zos.manager
 dev.galasa.zos3270.manager
