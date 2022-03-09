@@ -41,8 +41,8 @@ subprojects {
     }
 
     java {
-        withJavadocJar()
-        withSourcesJar()
+        // withJavadocJar()
+        // withSourcesJar()
     }
     
     tasks.withType(Javadoc) {
@@ -96,7 +96,7 @@ subprojects {
         compileOnly 'dev.galasa:dev.galasa.openstack.manager:0.15.0'
         compileOnly 'dev.galasa:dev.galasa.kubernetes.manager:0.16.0'
         compileOnly 'dev.galasa:dev.galasa.docker.manager:0.15.0'
-        compileOnly 'dev.galasa:dev.galasa.galasaecosystem.manager:0.20.0'
+        compileOnly 'dev.galasa:dev.galasa.galasaecosystem.manager:0.21.0'
         compileOnly 'dev.galasa:dev.galasa.java.manager:0.17.0'
         compileOnly 'dev.galasa:dev.galasa.java.ubuntu.manager:0.17.0'
         compileOnly 'dev.galasa:dev.galasa.java.windows.manager:0.17.0'
