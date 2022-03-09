@@ -39,5 +39,10 @@ public class CEMTLocalJava08Ubuntu extends AbstractCEMTLocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
+    
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
 
 }

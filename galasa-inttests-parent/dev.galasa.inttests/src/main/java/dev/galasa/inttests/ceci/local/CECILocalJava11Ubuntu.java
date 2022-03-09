@@ -41,5 +41,10 @@ public class CECILocalJava11Ubuntu extends AbstractCECILocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
+    
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
 
 }

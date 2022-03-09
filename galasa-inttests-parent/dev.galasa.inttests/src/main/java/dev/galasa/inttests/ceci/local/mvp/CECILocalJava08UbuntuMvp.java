@@ -41,4 +41,9 @@ public class CECILocalJava08UbuntuMvp extends AbstractCECILocal {
         return this.ecosystem;
     }
 
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
+    
 }

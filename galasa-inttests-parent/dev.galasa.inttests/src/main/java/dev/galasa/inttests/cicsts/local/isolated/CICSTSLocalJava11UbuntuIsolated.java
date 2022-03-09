@@ -40,5 +40,10 @@ public class CICSTSLocalJava11UbuntuIsolated extends AbstractCICSTSLocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
+    
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
 
 }

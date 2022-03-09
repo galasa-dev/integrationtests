@@ -10,37 +10,25 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.BeforeClass;
 import dev.galasa.Test;
-import dev.galasa.core.manager.ResourceString;
-import dev.galasa.core.manager.IResourceString;
 import dev.galasa.galasaecosystem.GalasaEcosystemManagerException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
+import dev.galasa.zos.IZosImage;
 
 public abstract class AbstractCEMTLocal {
-
-    @ResourceString(tag = "PROG", length = 8)
-    public IResourceString resourceString1;
-	
-	@ResourceString(tag = "TRX", length = 4)
-    public IResourceString resourceString2;
-	
-	@ResourceString(tag = "GROUP", length = 8)
-    public IResourceString resourceString3;
-	
-	@ResourceString(tag = "TDQ", length = 4)
-    public IResourceString resourceString4;
     
     @BeforeClass
     public void setUp() throws GalasaEcosystemManagerException {
-    	getEcosystem().setCpsProperty("cicsts.dse.tag.PRIMARY.applid", "IYK2ZNB5");
-        getEcosystem().setCpsProperty("cicsts.provision.type", "DSE");
+        getEcosystem().setCpsProperty("cicsts.provision.type", "SEM");
         getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
         getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
         
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.PROG", resourceString1.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.TRX", resourceString2.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.GROUP", resourceString3.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.TDQ", resourceString4.toString());
-    }
+        getEcosystem().setCpsProperty("zosprogram.cobol." + getZosImage().getImageID() + ".dataset.prefix", 
+				  					  getEcosystem().getHostCpsProperty("zosprogram", "cobol", "dataset.prefix", getZosImage().getImageID()));
+        getEcosystem().setCpsProperty("zosprogram.le." + getZosImage().getImageID() + ".dataset.prefix", 
+				  					  getEcosystem().getHostCpsProperty("zosprogram", "le", "dataset.prefix", getZosImage().getImageID()));
+        getEcosystem().setCpsProperty("zosprogram.cics." + getZosImage().getImageID() + ".dataset.prefix", 
+				  					  getEcosystem().getHostCpsProperty("zosprogram", "cics", "dataset.prefix", getZosImage().getImageID()));
+}
 
     @Test
     public void testCEMTIvtTest() throws Exception {
@@ -64,5 +52,7 @@ public abstract class AbstractCEMTLocal {
     }
 
     abstract protected IGenericEcosystem getEcosystem();
+    
+    abstract protected IZosImage getZosImage();
     
 }

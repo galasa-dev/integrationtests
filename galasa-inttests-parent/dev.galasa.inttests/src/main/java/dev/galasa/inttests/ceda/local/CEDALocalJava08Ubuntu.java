@@ -38,5 +38,10 @@ public class CEDALocalJava08Ubuntu extends AbstractCEDALocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
+    
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
 
 }

@@ -10,45 +10,25 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.BeforeClass;
 import dev.galasa.Test;
-import dev.galasa.core.manager.IResourceString;
-import dev.galasa.core.manager.ResourceString;
 import dev.galasa.galasaecosystem.GalasaEcosystemManagerException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
+import dev.galasa.zos.IZosImage;
 
 public abstract class AbstractCEDALocal {
 	
-	@ResourceString(tag = "PROG1", length = 8)
-    public IResourceString resourceString1;
-	
-	@ResourceString(tag = "PROG2", length = 8)
-    public IResourceString resourceString2;
-	
-	@ResourceString(tag = "TRX", length = 4)
-    public IResourceString resourceString3;
-	
-	@ResourceString(tag = "LIB", length = 4)
-    public IResourceString resourceString4;
-	
-	@ResourceString(tag = "GROUP1", length = 8)
-    public IResourceString resourceString5;
-	
-	@ResourceString(tag = "GROUP2", length = 8)
-    public IResourceString resourceString6;
-	
 	@BeforeClass
     public void setUp() throws GalasaEcosystemManagerException {
-    	getEcosystem().setCpsProperty("cicsts.dse.tag.PRIMARY.applid", "IYK2ZNB5");
-        getEcosystem().setCpsProperty("cicsts.provision.type", "DSE");
+        getEcosystem().setCpsProperty("cicsts.provision.type", "SEM");
         getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
         getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
         
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.PROG1", resourceString1.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.PROG2", resourceString2.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.TRX", resourceString3.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.LIB", resourceString4.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.GROUP1", resourceString5.toString());
-        getEcosystem().setCpsProperty("test.IVT.RESOURCE.STRING.GROUP2", resourceString6.toString());
-    }
+        getEcosystem().setCpsProperty("zosprogram.cobol." + getZosImage().getImageID() + ".dataset.prefix", 
+        							  getEcosystem().getHostCpsProperty("zosprogram", "cobol", "dataset.prefix", getZosImage().getImageID()));
+        getEcosystem().setCpsProperty("zosprogram.le." + getZosImage().getImageID() + ".dataset.prefix", 
+        							  getEcosystem().getHostCpsProperty("zosprogram", "le", "dataset.prefix", getZosImage().getImageID()));
+        getEcosystem().setCpsProperty("zosprogram.cics." + getZosImage().getImageID() + ".dataset.prefix", 
+        							  getEcosystem().getHostCpsProperty("zosprogram", "cics", "dataset.prefix", getZosImage().getImageID()));
+}
 
     @Test
     public void testCEDAIvtTest() throws Exception {
@@ -72,5 +52,7 @@ public abstract class AbstractCEDALocal {
     }
 
     abstract protected IGenericEcosystem getEcosystem();
+    
+    abstract protected IZosImage getZosImage();
     
 }

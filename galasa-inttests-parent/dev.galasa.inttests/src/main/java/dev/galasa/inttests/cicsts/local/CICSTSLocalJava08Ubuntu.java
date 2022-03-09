@@ -39,5 +39,10 @@ public class CICSTSLocalJava08Ubuntu extends AbstractCICSTSLocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
+    
+    @Override 
+    protected IZosImage getZosImage() {
+    	return this.zosImage;
+    }
 
 }
