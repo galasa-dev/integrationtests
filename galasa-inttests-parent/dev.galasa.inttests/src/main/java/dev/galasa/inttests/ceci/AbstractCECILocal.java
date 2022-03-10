@@ -18,13 +18,20 @@ public abstract class AbstractCECILocal {
 	
 	@BeforeClass
     public void setUp() throws GalasaEcosystemManagerException {
-        getEcosystem().setCpsProperty("cicsts.provision.type", "SEM");
-        getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
-        getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
+        getEcosystem().setCpsProperty("cicsts.provision.type", getEcosystem().getHostCpsProperty("cicsts", "provision", "type"));
+        
+        getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", getEcosystem().getHostCpsProperty("cicsts", "default.logon", "text", "initial"));
+        
+        getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", getEcosystem().getHostCpsProperty("cicsts", "default.logon", "text", "gm"));
+        
+        getEcosystem().setCpsProperty("cicsts.default.version", getEcosystem().getHostCpsProperty("cicsts", "default", "version"));
+        
         getEcosystem().setCpsProperty("zosprogram.cobol." + getZosImage().getImageID() + ".dataset.prefix", 
 				   					  getEcosystem().getHostCpsProperty("zosprogram", "cobol", "dataset.prefix", getZosImage().getImageID()));
+        
         getEcosystem().setCpsProperty("zosprogram.le." + getZosImage().getImageID() + ".dataset.prefix", 
 				   					  getEcosystem().getHostCpsProperty("zosprogram", "le", "dataset.prefix", getZosImage().getImageID()));
+        
         getEcosystem().setCpsProperty("zosprogram.cics." + getZosImage().getImageID() + ".dataset.prefix", 
 				   					  getEcosystem().getHostCpsProperty("zosprogram", "cics", "dataset.prefix", getZosImage().getImageID()));
 	}
