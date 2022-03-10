@@ -26,6 +26,9 @@ public abstract class AbstractCECILocal {
         
         getEcosystem().setCpsProperty("cicsts.default.version", getEcosystem().getHostCpsProperty("cicsts", "default", "version"));
         
+        getEcosystem().setCpsProperty("sem.internal.version." + getEcosystem().getHostCpsProperty("cicsts", "default", "version"),
+        							  getEcosystem().getHostCpsProperty("sem", "internal", getEcosystem().getHostCpsProperty("cicsts", "default", "version"), "version"));
+        
         getEcosystem().setCpsProperty("zosprogram.cobol." + getZosImage().getImageID() + ".dataset.prefix", 
 				   					  getEcosystem().getHostCpsProperty("zosprogram", "cobol", "dataset.prefix", getZosImage().getImageID()));
         
