@@ -16,9 +16,11 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
+import dev.galasa.sem.SemTopology;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
+@SemTopology
 @Test
 @TestAreas({"cicstsManager","localecosystem","java16","ubuntu"})
 public class CICSTSLocalJava16Ubuntu extends AbstractCICSTSLocal {
@@ -38,11 +40,6 @@ public class CICSTSLocalJava16Ubuntu extends AbstractCICSTSLocal {
     @Override
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
-    }
-    
-    @Override 
-    protected IZosImage getZosImage() {
-    	return this.zosImage;
     }
 
 }

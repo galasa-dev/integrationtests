@@ -10,25 +10,29 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.BeforeClass;
 import dev.galasa.Test;
+import dev.galasa.cicsts.CicsRegion;
+import dev.galasa.cicsts.CicstsManagerException;
+import dev.galasa.cicsts.ICicsRegion;
 import dev.galasa.galasaecosystem.GalasaEcosystemManagerException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
-import dev.galasa.zos.IZosImage;
 
 public abstract class AbstractCEDALocal {
 	
+	@CicsRegion(cicsTag = "A")
+	public ICicsRegion cics;
+	
 	@BeforeClass
-    public void setUp() throws GalasaEcosystemManagerException {
-        getEcosystem().setCpsProperty("cicsts.provision.type", "SEM");
-        getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
-        getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
-        
-        getEcosystem().setCpsProperty("zosprogram.cobol." + getZosImage().getImageID() + ".dataset.prefix", 
-        							  getEcosystem().getHostCpsProperty("zosprogram", "cobol", "dataset.prefix", getZosImage().getImageID()));
-        getEcosystem().setCpsProperty("zosprogram.le." + getZosImage().getImageID() + ".dataset.prefix", 
-        							  getEcosystem().getHostCpsProperty("zosprogram", "le", "dataset.prefix", getZosImage().getImageID()));
-        getEcosystem().setCpsProperty("zosprogram.cics." + getZosImage().getImageID() + ".dataset.prefix", 
-        							  getEcosystem().getHostCpsProperty("zosprogram", "cics", "dataset.prefix", getZosImage().getImageID()));
-}
+    public void setProperties() throws GalasaEcosystemManagerException, CicstsManagerException {
+		// Setting these properties in the shadow ecosystem
+		getEcosystem().setCpsProperty("cicsts.provision.type", "DSE");
+		getEcosystem().setCpsProperty("cicsts.dse.tag.A.applid", cics.getApplid());
+		getEcosystem().setCpsProperty("cicsts.dse.tag.A.version", cics.getVersion().toString());	
+//		getEcosystem().setCpsProperty("cicsts.dse.tag.A.jvmprofiledir", cics.getJvmProfileDir());
+//		getEcosystem().setCpsProperty("cicsts.dse.tag.A.usshome", cics.getUssHome());
+//		getEcosystem().setCpsProperty("cicsts.dse.tag.A.javahome", cics.getJavaHome());	
+		getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
+		getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
+	}
 
     @Test
     public void testCEDAIvtTest() throws Exception {
@@ -52,7 +56,5 @@ public abstract class AbstractCEDALocal {
     }
 
     abstract protected IGenericEcosystem getEcosystem();
-    
-    abstract protected IZosImage getZosImage();
-    
+
 }

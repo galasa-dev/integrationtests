@@ -16,9 +16,11 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
+import dev.galasa.sem.SemTopology;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
+@SemTopology
 @Test
 @TestAreas({"cedaManager","localecosystem","java16","ubuntu"})
 public class CEDALocalJava16Ubuntu extends AbstractCEDALocal {
@@ -39,10 +41,5 @@ public class CEDALocalJava16Ubuntu extends AbstractCEDALocal {
     protected IGenericEcosystem getEcosystem() {
         return this.ecosystem;
     }
-    
-    @Override 
-    protected IZosImage getZosImage() {
-    	return this.zosImage;
-    }
-
+   
 }
