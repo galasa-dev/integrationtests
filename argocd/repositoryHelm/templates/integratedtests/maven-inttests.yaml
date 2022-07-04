@@ -24,6 +24,9 @@ spec:
       - name: maven-inttests
         image: {{ .Values.registry }}/galasadev/galasa-maven-inttests:{{ .Values.branch }}
         imagePullPolicy: Always
+        env:
+        - name: CONTEXTROOT
+          value: {{ .Values.branch }}/maven/inttests 
         ports:
         - name: http
           containerPort: 80
