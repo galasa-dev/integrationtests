@@ -8,6 +8,7 @@ import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 import dev.galasa.galasaecosystem.LocalEcosystem;
+import dev.galasa.githubissue.GitHubIssue;
 import dev.galasa.inttests.zosFile.AbstractZosFileLocalRSE;
 import dev.galasa.java.JavaVersion;
 import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
@@ -21,6 +22,7 @@ import dev.galasa.zos.ZosImage;
 @Test
 @TestAreas({"zosManager","localecosystem","java11","ubuntu"})
 //@Tags({"codecoverage"}) disabled until RSE stable
+@GitHubIssue(issue = "1060")
 public class ZosFileLocalJava11UbuntuRse extends AbstractZosFileLocalRSE {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", addDefaultZosImage = "PRIMARY")

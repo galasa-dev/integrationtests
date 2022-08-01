@@ -9,6 +9,7 @@ import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.galasaecosystem.ILocalEcosystem;
 import dev.galasa.galasaecosystem.IsolationInstallation;
 import dev.galasa.galasaecosystem.LocalEcosystem;
+import dev.galasa.githubissue.GitHubIssue;
 import dev.galasa.inttests.zosFileDataset.AbstractZosFileDatasetLocalRSE;
 import dev.galasa.java.JavaVersion;
 import dev.galasa.java.ubuntu.IJavaUbuntuInstallation;
@@ -21,6 +22,7 @@ import dev.galasa.zos.ZosImage;
 
 @Test
 @TestAreas({"zosManager","localecosystem","java11","ubuntu","mvp"})
+@GitHubIssue(issue = "1060")
 public class ZosFileDatasetLocalJava11UbuntuMvpRse extends AbstractZosFileDatasetLocalRSE {
 
     @LocalEcosystem(linuxImageTag = "PRIMARY", isolationInstallation = IsolationInstallation.Mvp, addDefaultZosImage = "PRIMARY")
