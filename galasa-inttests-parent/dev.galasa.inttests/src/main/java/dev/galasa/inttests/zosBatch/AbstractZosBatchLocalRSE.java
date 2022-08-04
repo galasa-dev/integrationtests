@@ -9,10 +9,12 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.Test;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
+import dev.galasa.githubissue.GitHubIssue;
 
 public abstract class AbstractZosBatchLocalRSE {
     
     @Test
+    @GitHubIssue( issue = "1060" )
     public void testZosBatchIvtTestRSE() throws Exception {
     	
     	//Use RSE batch
