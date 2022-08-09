@@ -104,6 +104,7 @@ subprojects {
         compileOnly 'dev.galasa:dev.galasa.cicsts.manager:0.24.0'
         compileOnly 'dev.galasa:dev.galasa.zosprogram.manager:0.21.0'
         compileOnly 'dev.galasa:dev.galasa.githubissue.manager:0.25.0'
+	compileOnly 'dev.galasa:dev.galasa.zos3270.manager:0.25.0'
         compileOnly 'commons-logging:commons-logging:1.2'
         compileOnly 'org.assertj:assertj-core:3.11.0'
         compileOnly 'javax.validation:validation-api:2.0.1.Final'
