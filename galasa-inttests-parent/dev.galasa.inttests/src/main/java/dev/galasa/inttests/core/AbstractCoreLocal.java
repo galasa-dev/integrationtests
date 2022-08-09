@@ -24,7 +24,7 @@ public abstract class AbstractCoreLocal {
                 "dev.galasa.core.manager.ivt.CoreManagerIVT", 
                 null, 
                 null, 
-                null, 
+                null,  
                 null);
         
         JsonObject run = getEcosystem().waitForRun(runName);
