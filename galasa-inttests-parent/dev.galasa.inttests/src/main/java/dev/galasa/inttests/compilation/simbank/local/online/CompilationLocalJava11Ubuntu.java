@@ -15,6 +15,9 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
+import dev.galasa.githubissue.GitHubIssue;
+
+@GitHubIssue(issue = "1174")
 
 @Test
 @TestAreas({"compilation","localecosystem","java11","ubuntu"})
