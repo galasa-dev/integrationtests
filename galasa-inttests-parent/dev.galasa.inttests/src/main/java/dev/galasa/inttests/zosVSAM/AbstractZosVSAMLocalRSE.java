@@ -9,12 +9,12 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.Test;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
-//import dev.galasa.githubissue.GitHubIssue;
+import dev.galasa.githubissue.GitHubIssue;
 
 public abstract class AbstractZosVSAMLocalRSE {
     
     @Test
-    //@GitHubIssue( issue = "1060" )
+    @GitHubIssue( issue = "1060" )
     public void testZosFileIvtTestRSE() throws Exception {
     	getEcosystem().setCpsProperty("zos.bundle.extra.file.manager", "dev.galasa.zosfile.rseapi.manager");
         
