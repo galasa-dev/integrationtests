@@ -31,13 +31,13 @@ public abstract class AbstractCECILocal {
 	@CicsTerminal(cicsTag = "A")
 	public ICicsTerminal terminal;
 	
-	@ZosProgram(name = "APITEST", location = "resources/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
+	@ZosProgram(name = "APITEST", location = "/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
 	public IZosProgram APITEST;
 	   
-	@ZosProgram(name = "CONTTEST", location = "resources/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
+	@ZosProgram(name = "CONTTEST", location = "/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
 	public IZosProgram CONTTEST;
 	   
-	@ZosProgram(name = "PRGABEND", location = "resources/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
+	@ZosProgram(name = "PRGABEND", location = "/zosPrograms", language = Language.COBOL, imageTag = "PRIMARY", cics = true)
 	public IZosProgram PRGABEND;
 	
 	public String libName = "LIB1";
