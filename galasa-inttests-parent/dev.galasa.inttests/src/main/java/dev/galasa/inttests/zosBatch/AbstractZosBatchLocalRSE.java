@@ -14,7 +14,6 @@ import dev.galasa.githubissue.GitHubIssue;
 public abstract class AbstractZosBatchLocalRSE {
     
     @Test
-    @GitHubIssue( issue = "1060" )
     public void testZosBatchIvtTestRSE() throws Exception {
     	
     	//Use RSE batch
