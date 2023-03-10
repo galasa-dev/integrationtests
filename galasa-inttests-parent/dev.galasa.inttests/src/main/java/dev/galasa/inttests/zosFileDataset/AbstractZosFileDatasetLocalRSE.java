@@ -14,7 +14,6 @@ import dev.galasa.githubissue.GitHubIssue;
 public abstract class AbstractZosFileDatasetLocalRSE {
     
     @Test
-    @GitHubIssue( issue = "1060" )
     public void testZosFileIvtTestRSE() throws Exception {
     	getEcosystem().setCpsProperty("zos.bundle.extra.file.manager", "dev.galasa.zosfile.rseapi.manager");
         
