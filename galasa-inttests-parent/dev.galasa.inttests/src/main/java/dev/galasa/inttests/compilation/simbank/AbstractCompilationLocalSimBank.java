@@ -122,7 +122,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         logger.trace("Copying /.gradle into parent directory");
         moveFilesOnRemote(
                 unpackedDir.resolve("simplatform-main/galasa-simbank-tests/.gradle"), 
-                simplatformParent.resolve("/.gradle")
+                simplatformParent.resolve(".gradle")
             );    
     }
 
