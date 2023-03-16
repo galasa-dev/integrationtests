@@ -212,7 +212,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
     
     private void createGradleProperties(Path simplatformParent) throws IOException {
         logger.trace("Creating gradle.properties");
-        Path gradlePropertiesFile = simplatformParent.resolve("/.gradle/gradle.properties");
+        Path gradlePropertiesFile = simplatformParent.resolve(".gradle/gradle.properties");
         
         StringBuilder gradlePropertiesSB = new StringBuilder();
         gradlePropertiesSB.append("sourceMaven=https://development.galasa.dev/main/maven-repo/obr/");
