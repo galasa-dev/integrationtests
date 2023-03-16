@@ -51,6 +51,8 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.createDirectories(simplatformParent);
         structureSimplatform(remoteUnpacked, simplatformParent);
         createParentSettings(simplatformParent);
+        createGradleProperties();
+        logger.trace("SUCCESSFULLY CREATED gradle.properties");
         
         outputFiles("simplatform-example", simplatformParent, true);
         
@@ -199,5 +201,17 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.write(file, fileData.getBytes());
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
     }
+    
+    
+    private void createGradleProperties() throws IOException {
+        logger.trace("Creating gradle.properties");
+        Path gradlePropertiesFile = testRunDirectory.resolve("/.gradle/gradle.properties");
+        
+        StringBuilder gradlePropertiesSB = new StringBuilder();
+        gradlePropertiesSB.append("sourceMaven=https://development.galasa.dev/main/maven-repo/obr/");
+        
+        Files.write(gradlePropertiesFile, gradlePropertiesSB.toString().getBytes());
+    }
+    
     
 }
