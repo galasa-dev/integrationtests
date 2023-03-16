@@ -71,6 +71,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
             ex = "-example";
         } else {
             storeOutput(prefix, simplatformParent.resolve("settings.gradle"));
+            storeOutput(prefix, simplatformParent.resolve(".gradle/gradle.properties"));
         }
         
         storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/settings" + ex + ".gradle"));
