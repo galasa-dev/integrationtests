@@ -52,7 +52,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         structureSimplatform(remoteUnpacked, simplatformParent);
         createParentSettings(simplatformParent);
         createGradleProperties(simplatformParent);
-        logger.trace("SUCCESSFULLY CREATED gradle.properties");
+        logger.trace("Successfully created gradle.properties");
         
         outputFiles("simplatform-example", simplatformParent, true);
         
@@ -210,7 +210,12 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
     }
     
-    
+    /*
+     * Creates a Gradle properties file within the specified directory
+     * 
+     * @param    simplatformParent    The directory of the simplatform project
+     * 
+     */
     private void createGradleProperties(Path simplatformParent) throws IOException {
         logger.trace("Creating gradle.properties");
         Path gradlePropertiesFile = simplatformParent.resolve(".gradle/gradle.properties");
