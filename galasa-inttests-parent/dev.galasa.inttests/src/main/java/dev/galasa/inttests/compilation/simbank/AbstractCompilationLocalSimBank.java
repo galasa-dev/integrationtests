@@ -51,6 +51,8 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.createDirectories(simplatformParent);
         structureSimplatform(remoteUnpacked, simplatformParent);
         createParentSettings(simplatformParent);
+        createGradleProperties(simplatformParent);
+        logger.trace("Successfully created gradle.properties");
         
         outputFiles("simplatform-example", simplatformParent, true);
         
@@ -69,6 +71,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
             ex = "-example";
         } else {
             storeOutput(prefix, simplatformParent.resolve("settings.gradle"));
+            storeOutput(prefix, simplatformParent.resolve(".gradle/gradle.properties"));
         }
         
         storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/settings" + ex + ".gradle"));
@@ -114,7 +117,14 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         moveFilesOnRemote(
                 unpackedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName), 
                 simplatformParent.resolve(testProjectName)
-            );        
+            );    
+        
+        // Get /.gradle
+        logger.trace("Copying /.gradle into parent directory");
+        moveFilesOnRemote(
+                unpackedDir.resolve("simplatform-main/galasa-simbank-tests/.gradle"), 
+                simplatformParent.resolve(".gradle")
+            );    
     }
 
     /*
@@ -199,5 +209,22 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.write(file, fileData.getBytes());
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
     }
+    
+    /*
+     * Creates a Gradle properties file within the specified directory
+     * 
+     * @param    simplatformParent    The directory of the simplatform project
+     * 
+     */
+    private void createGradleProperties(Path simplatformParent) throws IOException {
+        logger.trace("Creating gradle.properties");
+        Path gradlePropertiesFile = simplatformParent.resolve(".gradle/gradle.properties");
+        
+        StringBuilder gradlePropertiesSB = new StringBuilder();
+        gradlePropertiesSB.append("sourceMaven=https://development.galasa.dev/main/maven-repo/obr/");
+        
+        Files.write(gradlePropertiesFile, gradlePropertiesSB.toString().getBytes());
+    }
+    
     
 }
