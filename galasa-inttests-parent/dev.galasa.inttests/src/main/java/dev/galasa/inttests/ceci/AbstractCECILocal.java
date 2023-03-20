@@ -17,6 +17,7 @@ import dev.galasa.cicsts.CicsTerminal;
 import dev.galasa.cicsts.CicstsManagerException;
 import dev.galasa.cicsts.ICicsRegion;
 import dev.galasa.cicsts.ICicsTerminal;
+import dev.galasa.core.manager.TestProperty;
 import dev.galasa.galasaecosystem.GalasaEcosystemManagerException;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
 import dev.galasa.zosprogram.IZosProgram;
@@ -43,6 +44,9 @@ public abstract class AbstractCECILocal {
 	public String libName = "LIB1";
 	
 	public String groupName = "PROGGRP";
+
+	@TestProperty(prefix = "zos3270", suffix = "terminal.output", required = false)
+	public String terminalOutput;
 	
 	@BeforeClass
 	public void loadResources() throws CeciException, CicstsManagerException {
@@ -75,6 +79,11 @@ public abstract class AbstractCECILocal {
 //		getEcosystem().setCpsProperty("cicsts.dse.tag.A.javahome", cics.getJavaHome());	
 		getEcosystem().setCpsProperty("cicsts.default.logon.initial.text", "HIT ENTER FOR LATEST STATUS");
 		getEcosystem().setCpsProperty("cicsts.default.logon.gm.text", "******\\(R)");
+
+		// Setting Terminal output in the child ecosystem if overridden in the parent. Default is Json.
+		if (terminalOutput != null && !terminalOutput.equals("")) {
+			getEcosystem().setCpsProperty("zos3270.terminal.output", terminalOutput);
+		}
 	}
 
     @Test
