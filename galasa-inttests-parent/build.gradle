@@ -87,7 +87,7 @@ subprojects {
 
     dependencies {
         compileOnly 'dev.galasa:dev.galasa:0.21.0'
-        compileOnly 'dev.galasa:dev.galasa.framework:0.26.0'
+        compileOnly 'dev.galasa:dev.galasa.framework:0.27.0'
         compileOnly 'dev.galasa:dev.galasa.core.manager:0.25.0'
         compileOnly 'dev.galasa:dev.galasa.zos.manager:0.26.0'
         compileOnly 'dev.galasa:dev.galasa.ipnetwork.manager:0.25.0'
