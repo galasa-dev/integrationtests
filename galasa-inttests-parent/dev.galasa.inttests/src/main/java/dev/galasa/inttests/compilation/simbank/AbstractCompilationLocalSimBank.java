@@ -61,6 +61,10 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         refactorSimplatform(simplatformParent);
         
         outputFiles("simplatform-refactored", simplatformParent, false);
+
+         
+        makeGradleProperties();
+         
         
         return simplatformParent;
     }
@@ -210,6 +214,14 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         fileData = fileData.replace(incumbent, prefix);
         Files.write(file, fileData.getBytes());
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
+    }
+
+    private void makeGradleProperties() throws IOException{
+        String gradleProperties = "gradle.properties";
+        String obr = "sourceMaven=https://development.galasa.dev/main/maven-repo/obr/";
+        Path gradlePropertiesFile = testRunDirectory.resolve("/.gradle/" + gradleProperties);
+        Files.write(gradlePropertiesFile, obr.getBytes());
+        
     }
     
     /*
