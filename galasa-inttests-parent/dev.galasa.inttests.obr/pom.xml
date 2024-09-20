@@ -5,7 +5,7 @@
 
 	<groupId>dev.galasa</groupId>
 	<artifactId>dev.galasa.inttests.obr</artifactId>
-	<version>0.36.0</version>
+	<version>0.38.0</version>
 	<packaging>galasa-obr</packaging>
 
 	<properties>
@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>dev.galasa</groupId>
 			<artifactId>dev.galasa.inttests</artifactId>
-			<version>0.36.0</version>
+			<version>0.38.0</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

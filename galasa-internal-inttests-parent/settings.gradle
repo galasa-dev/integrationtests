@@ -1,0 +1,16 @@
+// Tell gradle where it should look to find the plugins and dependencies it needs to build.
+pluginManagement {
+    repositories {
+        mavenLocal()
+        maven {
+           url "$sourceMaven"
+        }
+
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+// Tell gradle to build the sub-projects in child folders
+include 'dev.galasa.internal.inttests'
+include 'dev.galasa.internal.inttests.obr'

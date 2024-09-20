@@ -1,0 +1,67 @@
+// This section tells gradle which gradle plugins to use to build this project.
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'dev.galasa.tests' version '0.36.0'
+    id 'biz.aQute.bnd.builder' version '6.4.0'
+}
+
+// This section tells gradle where it should look for any dependencies
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+       url "$sourceMaven"
+    }
+    maven {
+       url "$internalMaven"
+    }
+
+}
+
+// Set the variables which will control what the built OSGi bundle will be called
+// and the name it will be published under in the maven repository.
+group = 'dev.galasa'
+version = '0.38.0'
+
+// What are the dependencies of the test code ?
+// When more managers and dependencies are added, this list will need to grow.
+dependencies {
+    implementation platform('dev.galasa:galasa-bom:0.38.0')
+
+    implementation 'dev.galasa:dev.galasa'
+    implementation 'dev.galasa:dev.galasa.framework'
+    implementation 'dev.galasa:dev.galasa.core.manager'
+    implementation 'commons-logging:commons-logging'
+    implementation 'org.assertj:assertj-core'
+
+    implementation 'dev.galasa:dev.galasa.galasaecosystem.manager'
+    implementation 'dev.galasa:dev.galasa.sem.manager'
+    implementation 'dev.galasa:dev.galasa.cicsts.manager'
+    implementation 'dev.galasa:dev.galasa.sdv.manager'
+    implementation 'dev.galasa:dev.galasa.zosprogram.manager'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+
+// Tell gradle to publish the built OSGi bundles as maven artifacts on the
+// local maven repository.
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "$targetMaven"
+
+            if ("$targetMaven".startsWith('http')) {
+                credentials {
+                    username System.getenv('GITHUB_ACTOR')
+                    password System.getenv('GITHUB_TOKEN')
+                }
+            }
+        }
+    }
+}

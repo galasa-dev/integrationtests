@@ -5,11 +5,9 @@ plugins {
 
 description = 'Galasa Integration Tests'
 
-version = '0.36.0'
+version = '0.38.0'
 
 dependencies {
-    implementation platform('dev.galasa:galasa-bom:0.36.0')
-
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'commons-io:commons-io:2.9.0'
 }

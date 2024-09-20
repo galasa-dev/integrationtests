@@ -1,7 +1,7 @@
 plugins {
-    id 'dev.galasa.githash' version '0.33.0' apply false
-    id 'dev.galasa.testcatalog' version '0.33.0' apply false
-    id 'dev.galasa.tests' version '0.33.0' apply false
+    id 'dev.galasa.githash' version '0.36.0' apply false
+    id 'dev.galasa.testcatalog' version '0.36.0' apply false
+    id 'dev.galasa.tests' version '0.36.0' apply false
 }
 
 subprojects {
@@ -86,7 +86,7 @@ subprojects {
  //   }
 
     dependencies {
-        implementation platform('dev.galasa:galasa-bom:0.36.0')
+        implementation platform('dev.galasa:galasa-bom:0.38.0')
 
         compileOnly 'dev.galasa:dev.galasa'
         compileOnly 'dev.galasa:dev.galasa.framework'
@@ -104,9 +104,6 @@ subprojects {
         compileOnly 'dev.galasa:dev.galasa.java.manager'
         compileOnly 'dev.galasa:dev.galasa.java.ubuntu.manager'
         compileOnly 'dev.galasa:dev.galasa.java.windows.manager'
-        compileOnly 'dev.galasa:dev.galasa.sem.manager'
-        compileOnly 'dev.galasa:dev.galasa.cicsts.manager'
-        compileOnly 'dev.galasa:dev.galasa.sdv.manager'
         compileOnly 'dev.galasa:dev.galasa.zosprogram.manager'
         compileOnly 'dev.galasa:dev.galasa.githubissue.manager'
         compileOnly 'commons-logging:commons-logging:1.2'

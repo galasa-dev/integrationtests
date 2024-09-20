@@ -127,7 +127,7 @@ function gradle_build {
     -Dorg.gradle.java.home=${JAVA_HOME} \
     -PsourceMaven=https://development.galasa.dev/main/maven-repo/obr ${OPTIONAL_DEBUG_FLAG} \
     -PcentralMaven=https://repo.maven.apache.org/maven2/ \
-    publish publishToMavenLocal \
+    build publishToMavenLocal \
     "
 
     info "Using this command: $cmd"
@@ -136,29 +136,22 @@ function gradle_build {
     success "Built OK"
 }
 
-function publish_artifacts {
-    h2 "Publishing using Maven..."
+function build_obr {
+    h2 "Building OBR using Maven..."
     cd ${BASEDIR}/galasa-inttests-parent/dev.galasa.inttests.obr
-
-    context=inttests/galasa-inttests-parent/dev.galasa.inttests.obr
-    bootstrap=https://galasa-ecosystem1.galasa.dev/api/bootstrap
 
     cmd="mvn \
     -Dgalasa.source.repo=https://development.galasa.dev/main/maven-repo/obr \
     -Dgalasa.central.repo=https://repo.maven.apache.org/maven2/ \
-    -Dgalasa.release.repo=file://$BASEDIR/temp \
-    -Dgalasa.bootstrap=${bootstrap} \
-    -Dgalasa.skip.deploytestcatalog=true \
-    -Dgalasa.skip.bundletestcatalog=false \
-    deploy dev.galasa:galasa-maven-plugin:deploytestcat \
+    install
     "
 
     info "Using this command: $cmd"
     $cmd 2>&1 >> ${log_file}
     rc=$? ; if [[ "${rc}" != "0" ]]; then error "Failed to build ${project} log is at ${log_file}" ; exit 1 ; fi
-    success "Published to '${bootstrap}' OK"
+    success "Built ${project} OBR OK"
 }
 
 mkdir -p $BASEDIR/temp
 gradle_build
-publish_artifacts
+build_obr
