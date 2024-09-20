@@ -36,11 +36,11 @@ dependencies {
     implementation 'org.assertj:assertj-core'
 
     implementation 'dev.galasa:dev.galasa.galasaecosystem.manager'
-    implementation 'dev.galasa:dev.galasa.sem.manager'
     implementation 'dev.galasa:dev.galasa.cicsts.manager'
     implementation 'dev.galasa:dev.galasa.sdv.manager'
     implementation 'dev.galasa:dev.galasa.zosprogram.manager'
 
+    implementation 'com.ibm.cics.managers:com.ibm.cics.provisioning.manager:0.0.4'
     implementation 'com.google.code.gson:gson:2.10.1'
 }
 

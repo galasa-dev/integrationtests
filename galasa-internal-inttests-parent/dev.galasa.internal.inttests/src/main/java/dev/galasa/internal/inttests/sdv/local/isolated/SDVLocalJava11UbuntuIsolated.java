@@ -5,6 +5,8 @@
  */
 package dev.galasa.internal.inttests.sdv.local.isolated;
 
+import com.ibm.cics.provisioning.annotations.Topology;
+
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
@@ -18,11 +20,10 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
-import dev.galasa.sem.SemTopology;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
-@SemTopology
+@Topology
 @Test
 @TestAreas({"sdvManager","localecosystem","java11","ubuntu","isolated"})
 public class SDVLocalJava11UbuntuIsolated extends AbstractSDVLocal {

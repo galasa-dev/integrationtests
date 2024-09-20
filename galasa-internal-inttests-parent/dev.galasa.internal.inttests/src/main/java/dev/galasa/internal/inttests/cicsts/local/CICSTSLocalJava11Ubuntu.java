@@ -5,6 +5,8 @@
  */
 package dev.galasa.internal.inttests.cicsts.local;
 
+import com.ibm.cics.provisioning.annotations.Topology;
+
 import dev.galasa.Tags;
 import dev.galasa.Test;
 import dev.galasa.TestAreas;
@@ -18,11 +20,10 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
-import dev.galasa.sem.SemTopology;
 import dev.galasa.zos.IZosImage;
 import dev.galasa.zos.ZosImage;
 
-@SemTopology
+@Topology
 @Test
 @TestAreas({"cicstsManager","localecosystem","java11","ubuntu"})
 @Tags({"codecoverage"})
