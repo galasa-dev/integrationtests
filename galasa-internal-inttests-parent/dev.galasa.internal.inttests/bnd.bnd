@@ -1,3 +1,2 @@
-Bundle-Version: 0.0.1-SNAPSHOT
 Bundle-Name: dev.galasa.internal.inttests
 Import-Package: *
