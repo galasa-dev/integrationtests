@@ -19,8 +19,7 @@ dependencies {
 def testcatalog = file('build/testcatalog.json')
 def obrFile = file('build/galasa.obr')
 
-
-tasks.withType(PublishToMavenLocal) { task ->
+tasks.withType(AbstractPublishToMaven) { task ->
     task.dependsOn genobr
     task.dependsOn mergetestcat
 }
