@@ -1,0 +1,117 @@
+#
+# Copyright contributors to the Galasa project
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+name: Main build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  NAMESPACE: galasa-dev
+
+jobs:
+  build-integrationtests:
+    name: Building the Integration Tests Repository
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'semeru'
+          cache: maven
+      
+      - name: Print githash
+        run: |
+            echo $GITHUB_SHA > ./inttests.githash
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.9
+          cache-disabled: true
+      
+      - name: Build Integration Tests Gradle source code
+        run: |
+          set -o pipefail
+          gradle -b galasa-inttests-parent/build.gradle publish publishToMavenLocal --info \
+          --no-daemon --console plain \
+          -PsourceMaven=https://development.galasa.dev/main/maven-repo/obr \
+          -PcentralMaven=https://repo.maven.apache.org/maven2/ \
+          -PtargetMaven=${{github.workspace}}/repo 2>&1 | tee gradle-build.log
+        
+      - name: Upload Gradle Build Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inttests-gradle-build-log
+          path: gradle-build.log
+          retention-days: 7
+      
+      - name: Building Integration Tests Maven source code
+        run: |
+            set -o pipefail
+            mvn -f galasa-inttests-parent/dev.galasa.inttests.obr/pom.xml deploy -X \
+            -Dgalasa.source.repo=https://development.galasa.dev/main/maven-repo/obr \
+            -Dgalasa.central.repo=https://repo.maven.apache.org/maven2/ \
+            -Dgalasa.release.repo=file:${{ github.workspace }}/repo \
+            -Dgalasa.skip.deploytestcatalog=true \
+            -Dgalasa.skip.bundletestcatalog=false \
+            --batch-mode --errors --fail-at-end \
+            --settings ${{ github.workspace }}/settings.xml 2>&1 | tee maven-build.log
+      
+      - name: Upload Maven Build Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inttests-obr-maven-build-log
+          path: maven-build.log
+          retention-days: 7
+      
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.WRITE_GITHUB_PACKAGES_USERNAME }}
+          password: ${{ secrets.WRITE_GITHUB_PACKAGES_TOKEN }}
+    
+      - name: Extract metadata for Integration Tests image
+        id: metadata
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/inttests-maven-artefacts
+    
+      - name: Build Integration Tests image for development Maven registry
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/dockerfile.inttests
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          build-args: |
+            baseVersion=latest
+            dockerRepository=ghcr.io
+            branch=main
+      
+      - name: Recycle application in ArgoCD
+        env: 
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+        run: |
+          docker run --env ARGOCD_AUTH_TOKEN=${{ env.ARGOCD_AUTH_TOKEN }} --rm -v ${{ github.workspace }}:/var/workspace ghcr.io/galasa-dev/argocdcli:main app actions run main-inttests restart --kind Deployment --resource-name inttests-main --server argocd.galasa.dev
+    
+      - name: Wait for app health in ArgoCD
+        env: 
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+        run: |
+          docker run --env ARGOCD_AUTH_TOKEN=${{ env.ARGOCD_AUTH_TOKEN }} --rm -v ${{ github.workspace }}:/var/workspace ghcr.io/galasa-dev/argocdcli:main app wait main-inttests --resource apps:Deployment:inttests-main --health --server argocd.galasa.dev

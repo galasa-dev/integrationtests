@@ -1,5 +1,7 @@
 /*
  * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package dev.galasa.inttests.docker;
 
@@ -35,9 +37,9 @@ public abstract class AbstractDocker {
 
 		// TODO: remove hard coded values
 		getEcosystem().setCpsProperty("docker.default.registries", "HARBOR,PROXY");
-		getEcosystem().setCpsProperty("docker.registry.HARBOR.url", "https://harbor-cicsk8s.hursley.ibm.com");
-		getEcosystem().setCpsProperty("docker.registry.PROXY.url", "https://harbor-cicsk8s.hursley.ibm.com");
-		getEcosystem().setCpsProperty("docker.registry.PROXY.image.prefix", "dockerhub");
+		getEcosystem().setCpsProperty("docker.registry.HARBOR.url", "https://harbor.galasa.dev");
+		getEcosystem().setCpsProperty("docker.registry.PROXY.url", "https://harbor.galasa.dev");
+		getEcosystem().setCpsProperty("docker.registry.PROXY.image.prefix", "docker_proxy_cache");
 	}
 	
 	@Test

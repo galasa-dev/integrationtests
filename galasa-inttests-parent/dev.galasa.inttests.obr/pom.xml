@@ -5,19 +5,19 @@
 
 	<groupId>dev.galasa</groupId>
 	<artifactId>dev.galasa.inttests.obr</artifactId>
-	<version>0.16.0</version>
+	<version>0.39.0</version>
 	<packaging>galasa-obr</packaging>
 
 	<properties>
 		<galasa.test.stream>inttests</galasa.test.stream>
-		<galasa.skip.bundletestcatatlog>true</galasa.skip.bundletestcatatlog>
-		<galasa.skip.deploytestcatatlog>true</galasa.skip.deploytestcatatlog>
+		<galasa.skip.bundletestcatalog>true</galasa.skip.bundletestcatalog>
+		<galasa.skip.deploytestcatalog>true</galasa.skip.deploytestcatalog>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 	</properties>
 
@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>dev.galasa</groupId>
 			<artifactId>dev.galasa.inttests</artifactId>
-			<version>0.16.0</version>
+			<version>0.39.0</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -46,7 +46,7 @@
 			<plugin>
 				<groupId>dev.galasa</groupId>
 				<artifactId>galasa-maven-plugin</artifactId>
-				<version>0.20.0</version>
+				<version>0.39.0</version>
 				<extensions>true</extensions>
 				<executions>
 					<execution>

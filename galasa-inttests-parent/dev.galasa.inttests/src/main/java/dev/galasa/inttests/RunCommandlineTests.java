@@ -1,7 +1,7 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2019.
+ * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package dev.galasa.inttests;
 
@@ -16,8 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
-
-import com.google.gson.Gson;
 
 import dev.galasa.AfterClass;
 import dev.galasa.BeforeClass;
@@ -35,7 +33,7 @@ import dev.galasa.core.manager.Logger;
 import dev.galasa.core.manager.StoredArtifactRoot;
 import dev.galasa.core.manager.TestProperty;
 import dev.galasa.framework.spi.teststructure.TestStructure;
-import dev.galasa.framework.spi.utils.GalasaGsonBuilder;
+import dev.galasa.framework.spi.utils.GalasaGson;
 
 /**
  * This integration test will prove that the basic framework is working by
@@ -45,7 +43,7 @@ import dev.galasa.framework.spi.utils.GalasaGsonBuilder;
  * 
  * It will then run the IVTs from the command line.
  * 
- * @author Michael Baylis
+ *  
  *
  */
 @Test
@@ -60,7 +58,7 @@ import dev.galasa.framework.spi.utils.GalasaGsonBuilder;
 public class RunCommandlineTests {
 
     private final Pattern runNamePattern = Pattern.compile("\\QAllocated Run Name \\E(\\w+)\\Q to this run\\E");
-    private final Gson    gson           = GalasaGsonBuilder.build();
+    private final GalasaGson    gson           = new GalasaGson();
 
     @Logger
     public Log            logger;

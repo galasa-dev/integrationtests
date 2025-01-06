@@ -1,6 +1,8 @@
 /*
-* Copyright contributors to the Galasa project 
-*/
+ * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package dev.galasa.inttests.compilation.simbank;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +53,8 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.createDirectories(simplatformParent);
         structureSimplatform(remoteUnpacked, simplatformParent);
         createParentSettings(simplatformParent);
+        createGradleProperties(simplatformParent);
+        logger.trace("Successfully created gradle.properties");
         
         outputFiles("simplatform-example", simplatformParent, true);
         
@@ -69,6 +73,7 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
             ex = "-example";
         } else {
             storeOutput(prefix, simplatformParent.resolve("settings.gradle"));
+            storeOutput(prefix, simplatformParent.resolve(".gradle/gradle.properties"));
         }
         
         storeOutput(prefix, simplatformParent.resolve(managerProjectName + "/settings" + ex + ".gradle"));
@@ -114,7 +119,11 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         moveFilesOnRemote(
                 unpackedDir.resolve("simplatform-main/galasa-simbank-tests/" + testProjectName), 
                 simplatformParent.resolve(testProjectName)
-            );        
+            );    
+        
+        // Create an empty gradle home folder, so we can add a properties files to it to control the build.
+        logger.trace("Creating an empty .gradle in the parent directory so we have a home for gradle properties.");
+        mkdirOnRemote( simplatformParent.resolve(".gradle") );    
     }
 
     /*
@@ -145,6 +154,13 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
      */
     private void moveFilesOnRemote(Path source, Path target) throws IpNetworkManagerException, LinuxManagerException {
         String command = "mv " + source.toString() + " " + target.toString() + "; echo RC=$?";
+        logger.info("issuing command: " + command);
+        String rc = getLinuxImage().getCommandShell().issueCommand(command);
+        assertThat(rc).isEqualToIgnoringWhitespace("RC=0");
+    }
+
+    private void mkdirOnRemote(Path target) throws IpNetworkManagerException, LinuxManagerException {
+        String command = "mkdir -p " + target.toString() + "; echo RC=$?";
         logger.info("issuing command: " + command);
         String rc = getLinuxImage().getCommandShell().issueCommand(command);
         assertThat(rc).isEqualToIgnoringWhitespace("RC=0");
@@ -199,5 +215,22 @@ public abstract class AbstractCompilationLocalSimBank extends AbstractCompilatio
         Files.write(file, fileData.getBytes());
         logger.trace("Changing prefix (" + incumbent + ") to \"" + prefix + "\" in file: " + file.toString());
     }
+    
+    /*
+     * Creates a Gradle properties file within the specified directory
+     * 
+     * @param    simplatformParent    The directory of the simplatform project
+     * 
+     */
+    private void createGradleProperties(Path simplatformParent) throws IOException {
+        logger.trace("Creating gradle.properties");
+        Path gradlePropertiesFile = simplatformParent.resolve(".gradle/gradle.properties");
+        
+        StringBuilder gradlePropertiesSB = new StringBuilder();
+        gradlePropertiesSB.append("sourceMaven=https://development.galasa.dev/main/maven-repo/obr/");
+        
+        Files.write(gradlePropertiesFile, gradlePropertiesSB.toString().getBytes());
+    }
+    
     
 }

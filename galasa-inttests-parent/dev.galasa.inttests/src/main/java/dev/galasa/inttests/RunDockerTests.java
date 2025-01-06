@@ -1,7 +1,7 @@
 /*
- * Licensed Materials - Property of IBM
- * 
- * (c) Copyright IBM Corp. 2019.
+ * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package dev.galasa.inttests;
 
@@ -40,7 +40,7 @@ import dev.galasa.core.manager.TestProperty;
  * IVTs against it in automation. Checks to see if the automation runs have been
  * fully cleaned up afterwards.
  * 
- * @author Michael Baylis
+ *  
  *
  */
 @Test

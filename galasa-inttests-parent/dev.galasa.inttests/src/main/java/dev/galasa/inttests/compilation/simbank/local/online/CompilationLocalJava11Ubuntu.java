@@ -1,6 +1,8 @@
 /*
-* Copyright contributors to the Galasa project 
-*/
+ * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package dev.galasa.inttests.compilation.simbank.local.online;
 
 import dev.galasa.Test;
@@ -15,6 +17,7 @@ import dev.galasa.java.ubuntu.JavaUbuntuInstallation;
 import dev.galasa.linux.ILinuxImage;
 import dev.galasa.linux.LinuxImage;
 import dev.galasa.linux.OperatingSystem;
+
 
 @Test
 @TestAreas({"compilation","localecosystem","java11","ubuntu"})

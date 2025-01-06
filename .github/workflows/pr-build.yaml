@@ -1,0 +1,85 @@
+#
+# Copyright contributors to the Galasa project
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+name: PR build
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-integrationtests:
+    name: Building the Integration Tests Repository
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'semeru'
+          cache: maven
+    
+      - name: Print githash
+        run: |
+          echo $GITHUB_SHA > ./inttests.githash
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.9
+          cache-disabled: true
+      
+      - name: Build Integration Tests Gradle source code
+        run: |
+          set -o pipefail
+          gradle -b galasa-inttests-parent/build.gradle publish publishToMavenLocal --info \
+          --no-daemon --console plain \
+          -PsourceMaven=https://development.galasa.dev/main/maven-repo/obr \
+          -PcentralMaven=https://repo.maven.apache.org/maven2/ \
+          -PtargetMaven=${{ github.workspace }}/repo 2>&1 | tee gradle-build.log
+      
+      - name: Upload Gradle Build Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inttests-gradle-build-log
+          path: gradle-build.log
+          retention-days: 7
+
+      - name: Building Integration Tests Maven source code
+        run: |
+            mvn -f galasa-inttests-parent/dev.galasa.inttests.obr/pom.xml deploy -X \
+            -Dgpg.skip=true \
+            -Dgalasa.source.repo=https://development.galasa.dev/main/maven-repo/obr \
+            -Dgalasa.central.repo=https://repo.maven.apache.org/maven2/ \
+            -Dgalasa.release.repo=file:${{ github.workspace }}/repo \
+            -Dgalasa.skip.deploytestcatalog=true \
+            -Dgalasa.skip.bundletestcatalog=false \
+            --batch-mode --errors --fail-at-end \
+            --settings ${{ github.workspace }}/settings.xml 2>&1 | tee maven-build.log
+          
+      - name: Upload Maven Build Log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inttests-obr-maven-build-log
+          path: maven-build.log
+          retention-days: 7
+    
+      - name: Build Integration Tests image for testing
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/dockerfile.inttests
+          load: true
+          tags: intests:test
+          build-args: |
+            baseVersion=latest
+            dockerRepository=ghcr.io
+            branch=main

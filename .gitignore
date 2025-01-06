@@ -19,3 +19,5 @@ lib/
 dependency-reduced-pom.xml
 build/
 .gradle/
+.vscode/
+temp/

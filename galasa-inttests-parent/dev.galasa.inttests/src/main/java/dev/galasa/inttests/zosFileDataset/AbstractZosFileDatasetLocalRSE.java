@@ -1,5 +1,7 @@
 /*
- * Copyright contributors to the Galasa project 
+ * Copyright contributors to the Galasa project
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package dev.galasa.inttests.zosFileDataset;
 
@@ -9,7 +11,9 @@ import com.google.gson.JsonObject;
 
 import dev.galasa.Test;
 import dev.galasa.galasaecosystem.IGenericEcosystem;
+import dev.galasa.githubissue.GitHubIssue;
 
+@GitHubIssue( issue = "1961" )
 public abstract class AbstractZosFileDatasetLocalRSE {
     
     @Test
