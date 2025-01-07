@@ -35,7 +35,7 @@ jobs:
           gradle-version: 8.9
           cache-disabled: true
       
-      - name: Build Integration Tests Gradle source code
+      - name: Build Integration Tests with Gradle
         run: |
           set -o pipefail
           gradle -b galasa-inttests-parent/build.gradle publish publishToMavenLocal --info \
@@ -52,7 +52,7 @@ jobs:
           path: gradle-build.log
           retention-days: 7
 
-      - name: Building Integration Tests Maven source code
+      - name: Building Integration Tests Test Catalog with Maven
         run: |
             mvn -f galasa-inttests-parent/dev.galasa.inttests.obr/pom.xml deploy -X \
             -Dgpg.skip=true \
