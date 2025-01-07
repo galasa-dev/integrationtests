@@ -82,4 +82,4 @@ jobs:
           build-args: |
             baseVersion=latest
             dockerRepository=ghcr.io
-            branch=${{ github.ref_name }}
+            branch=main
